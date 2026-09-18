@@ -19,8 +19,10 @@ export class GraphQlResolver {
     @Args('id') id: number,
     @Args('quantite') quantite: number,
   ): Promise<Product> {
-    // a compléter
-    return null as unknown as Product;
+    const world = this.service.readUserWorld(user);
+    const product = this.service.achatProduit(world, id, quantite);
+    this.service.saveWorld(user, world);
+    return product;
   }
 
   @Mutation()
