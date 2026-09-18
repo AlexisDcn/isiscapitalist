@@ -1,4 +1,3 @@
-import { origworld } from './origworld.js';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { AppService } from './app.service.js';
 import { World, Product, Palier } from './graphql.js';
@@ -10,6 +9,7 @@ export class GraphQlResolver {
   @Query()
   async getWorld(@Args('user') user: string): Promise<World> {
     const world = this.service.readUserWorld(user);
+    this.service.saveWorld(user, world);
     return world;
   }
 
