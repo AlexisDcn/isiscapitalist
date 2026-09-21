@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { origworld } from './origworld.js';
 import { World, Product, Palier, RatioType } from './graphql.js';
+import { calcQtProductionforElapseTime } from './production.js';
 
 @Injectable()
 export class AppService {
@@ -138,11 +139,59 @@ export class AppService {
       const data = fs.readFileSync(
         path.join(process.cwd(), 'userworlds/', user + '-world.json'),
       );
-      return JSON.parse(data.toString());
+      const world: World = JSON.parse(data.toString());
+      this.evolveWorld(world);
+      return world;
     } catch (e: unknown) {
       console.log((e as Error).message);
-      return origworld;
+      // structuredClone : origworld est un module partagé par tous les
+      // utilisateurs, il ne faut jamais le muter directement (sinon les
+      // achats du premier joueur sans sauvegarde pollueraient le monde
+      // d'origine de tous les autres).
+      const world: World = structuredClone(origworld);
+      // Monde tout juste créé : rien n'a encore pu se produire, on part de
+      // maintenant plutôt que de calculer une évolution depuis l'epoch 0.
+      world.lastupdate = this.nowInSeconds();
+      return world;
     }
+  }
+
+  // Calcule la production automatique de chaque produit depuis la dernière
+  // mise à jour du monde et l'ajoute à l'argent et au score, puis
+  // repositionne lastupdate sur l'instant courant.
+  //
+  // lastupdate est stocké en SECONDES (et non en millisecondes) : le schéma
+  // GraphQL le déclare en Int, un entier 32 bits signé, qui ne peut pas
+  // représenter un timestamp epoch en millisecondes (~1.7 x 10^12 de nos
+  // jours) mais reste valide en secondes jusqu'en 2038.
+  private evolveWorld(world: World): void {
+    const now = this.nowInSeconds();
+    const elapseTime = Math.max(0, (now - world.lastupdate) * 1000);
+
+    if (elapseTime > 0) {
+      for (const product of world.products) {
+        const qt = calcQtProductionforElapseTime(product, elapseTime);
+        if (qt > 0) {
+          const gain = qt * this.calculerGainProduit(world, product);
+          world.money += gain;
+          world.score += gain;
+        }
+      }
+    }
+
+    world.lastupdate = now;
+  }
+
+  private calculerGainProduit(world: World, product: Product): number {
+    return (
+      product.quantite *
+      product.revenu *
+      (1 + (world.activeangels * world.angelbonus) / 100)
+    );
+  }
+
+  private nowInSeconds(): number {
+    return Math.floor(Date.now() / 1000);
   }
 
   saveWorld(user: string, world: World) {
