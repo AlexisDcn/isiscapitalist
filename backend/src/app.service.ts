@@ -110,7 +110,7 @@ export class AppService {
   }
 
   resetWorld(world: World): World {
-    const angesGagnes = this.calculerAngesGagnes(world.score);
+    const angesGagnes = this.calculerAngesGagnes(world);
 
     // On repart du monde d'origine (produits, unlocks, upgrades, managers
     // tous reinitialises), en ne conservant que le score et les compteurs
@@ -124,12 +124,16 @@ export class AppService {
     return nouveauMonde;
   }
 
-  // Le sujet ne precise pas la formule de conversion score -> anges gagnes
-  // au reset. Choix (a valider) : une croissance en racine carree, courante
-  // dans les jeux incrementaux, pour eviter que les anges n'explosent aussi
-  // vite que le score.
-  private calculerAngesGagnes(score: number): number {
-    return Math.floor(Math.sqrt(score / 1_000_000));
+  // Formule officielle (sujet frontend) : le nombre d'anges SUPPLEMENTAIRES
+  // gagnes par la partie en cours est 150 * sqrt(gains cumules / 10^15) -
+  // totalangels, "gains cumules" etant le score (jamais decremente). On
+  // borne a 0 : le score n'a pas assez progresse depuis le dernier reset
+  // pour justifier de nouveaux anges.
+  private calculerAngesGagnes(world: World): number {
+    const angesTheoriques = Math.floor(
+      150 * Math.sqrt(world.score / 1_000_000_000_000_000),
+    );
+    return Math.max(0, angesTheoriques - world.totalangels);
   }
 
   private findProduct(world: World, id: number): Product {
