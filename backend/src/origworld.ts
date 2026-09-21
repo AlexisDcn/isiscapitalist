@@ -7,7 +7,7 @@ import { RatioType } from './graphql.js';
 // Chaque produit est associé à un manager qui est le personnage lié à cet objet.
 export const origworld = {
   name: 'The Land of Ooo',
-  logo: 'icones/ooo-map.png',
+  logo: '/icones/ooo-map.png',
   money: 0,
   score: 0,
   totalangels: 0,
@@ -18,7 +18,7 @@ export const origworld = {
     {
       id: 1,
       name: "Ice King's Crown",
-      logo: 'icones/ice-king-crown.png',
+      logo: '/icones/ice-king-crown.png',
       cout: 4,
       croissance: 1.07,
       revenu: 1,
@@ -29,7 +29,7 @@ export const origworld = {
       paliers: [
         {
           name: 'Simon met la couronne pour la première fois',
-          logo: 'icones/ice-king-crown.png',
+          logo: '/icones/ice-king-crown.png',
           seuil: 20,
           idcible: 1,
           ratio: 2,
@@ -38,7 +38,7 @@ export const origworld = {
         },
         {
           name: 'La folie glaciale commence à opérer',
-          logo: 'icones/ice-king-crown.png',
+          logo: '/icones/ice-king-crown.png',
           seuil: 75,
           idcible: 1,
           ratio: 2,
@@ -47,7 +47,7 @@ export const origworld = {
         },
         {
           name: 'Simon devient le Roi des Glaces',
-          logo: 'icones/ice-king-crown.png',
+          logo: '/icones/ice-king-crown.png',
           seuil: 300,
           idcible: 1,
           ratio: 3,
@@ -59,7 +59,7 @@ export const origworld = {
     {
       id: 2,
       name: "L'Enchiridion",
-      logo: 'icones/enchiridion.png',
+      logo: '/icones/enchiridion.png',
       cout: 60,
       croissance: 1.15,
       revenu: 60,
@@ -70,7 +70,7 @@ export const origworld = {
       paliers: [
         {
           name: 'Un livre ancien retrouvé dans les ruines',
-          logo: 'icones/enchiridion.png',
+          logo: '/icones/enchiridion.png',
           seuil: 20,
           idcible: 2,
           ratio: 2,
@@ -79,7 +79,7 @@ export const origworld = {
         },
         {
           name: 'Billy y consigne les codes du héros',
-          logo: 'icones/enchiridion.png',
+          logo: '/icones/enchiridion.png',
           seuil: 75,
           idcible: 2,
           ratio: 2,
@@ -88,7 +88,7 @@ export const origworld = {
         },
         {
           name: "Finn en fait son manuel d'aventurier",
-          logo: 'icones/enchiridion.png',
+          logo: '/icones/enchiridion.png',
           seuil: 300,
           idcible: 2,
           ratio: 3,
@@ -100,7 +100,7 @@ export const origworld = {
     {
       id: 3,
       name: "L'Axe Basse de Marceline",
-      logo: 'icones/axe-bass.png',
+      logo: '/icones/axe-bass.png',
       cout: 720,
       croissance: 1.17,
       revenu: 540,
@@ -111,7 +111,7 @@ export const origworld = {
       paliers: [
         {
           name: "Simon forge l'axe pour la jeune Marceline",
-          logo: 'icones/axe-bass.png',
+          logo: '/icones/axe-bass.png',
           seuil: 20,
           idcible: 3,
           ratio: 2,
@@ -120,7 +120,7 @@ export const origworld = {
         },
         {
           name: 'Mille ans de riffs endiablés',
-          logo: 'icones/axe-bass.png',
+          logo: '/icones/axe-bass.png',
           seuil: 75,
           idcible: 3,
           ratio: 2,
@@ -129,7 +129,7 @@ export const origworld = {
         },
         {
           name: 'La Reine Vampire monte sur scène',
-          logo: 'icones/axe-bass.png',
+          logo: '/icones/axe-bass.png',
           seuil: 300,
           idcible: 3,
           ratio: 3,
@@ -141,7 +141,7 @@ export const origworld = {
     {
       id: 4,
       name: "L'Épée de Racine de Finn",
-      logo: 'icones/root-sword.png',
+      logo: '/icones/root-sword.png',
       cout: 8640,
       croissance: 1.19,
       revenu: 4320,
@@ -152,7 +152,7 @@ export const origworld = {
       paliers: [
         {
           name: "Finn taille son épée dans les racines de la forêt",
-          logo: 'icones/root-sword.png',
+          logo: '/icones/root-sword.png',
           seuil: 20,
           idcible: 4,
           ratio: 2,
@@ -161,7 +161,7 @@ export const origworld = {
         },
         {
           name: "L'heure de l'aventure a sonné !",
-          logo: 'icones/root-sword.png',
+          logo: '/icones/root-sword.png',
           seuil: 75,
           idcible: 4,
           ratio: 2,
@@ -170,7 +170,7 @@ export const origworld = {
         },
         {
           name: "Jake veille sur son frère d'armes",
-          logo: 'icones/root-sword.png',
+          logo: '/icones/root-sword.png',
           seuil: 300,
           idcible: 4,
           ratio: 3,
@@ -182,7 +182,7 @@ export const origworld = {
     {
       id: 5,
       name: 'Le Gantelet du Nightosphere',
-      logo: 'icones/gauntlet-nightosphere.png',
+      logo: '/icones/gauntlet-nightosphere.png',
       cout: 103680,
       croissance: 1.21,
       revenu: 51840,
@@ -193,7 +193,7 @@ export const origworld = {
       paliers: [
         {
           name: 'Jake ramène le gantelet du royaume de son père',
-          logo: 'icones/gauntlet-nightosphere.png',
+          logo: '/icones/gauntlet-nightosphere.png',
           seuil: 20,
           idcible: 5,
           ratio: 2,
@@ -202,7 +202,7 @@ export const origworld = {
         },
         {
           name: "Un coup de poing venu d'outre-tombe",
-          logo: 'icones/gauntlet-nightosphere.png',
+          logo: '/icones/gauntlet-nightosphere.png',
           seuil: 75,
           idcible: 5,
           ratio: 2,
@@ -211,7 +211,7 @@ export const origworld = {
         },
         {
           name: 'Hunson Abadeer garde un œil dessus',
-          logo: 'icones/gauntlet-nightosphere.png',
+          logo: '/icones/gauntlet-nightosphere.png',
           seuil: 300,
           idcible: 5,
           ratio: 3,
@@ -223,7 +223,7 @@ export const origworld = {
     {
       id: 6,
       name: "L'Épée Dorée de Combat de Finn",
-      logo: 'icones/golden-sword.png',
+      logo: '/icones/golden-sword.png',
       cout: 1244160,
       croissance: 1.23,
       revenu: 622080,
@@ -234,7 +234,7 @@ export const origworld = {
       paliers: [
         {
           name: 'La Princesse Chewing-Gum en dessine les plans',
-          logo: 'icones/golden-sword.png',
+          logo: '/icones/golden-sword.png',
           seuil: 20,
           idcible: 6,
           ratio: 2,
@@ -243,7 +243,7 @@ export const origworld = {
         },
         {
           name: 'Une lame forgée pour les combats les plus rudes',
-          logo: 'icones/golden-sword.png',
+          logo: '/icones/golden-sword.png',
           seuil: 75,
           idcible: 6,
           ratio: 2,
@@ -252,7 +252,7 @@ export const origworld = {
         },
         {
           name: "Le dernier rempart d'Ooo",
-          logo: 'icones/golden-sword.png',
+          logo: '/icones/golden-sword.png',
           seuil: 300,
           idcible: 6,
           ratio: 3,
@@ -265,7 +265,7 @@ export const origworld = {
   allunlocks: [
     {
       name: 'La Grande Guerre des Champignons prend fin',
-      logo: 'icones/mushroom-war.png',
+      logo: '/icones/mushroom-war.png',
       seuil: 30,
       idcible: 0,
       ratio: 2,
@@ -274,7 +274,7 @@ export const origworld = {
     },
     {
       name: 'La prophétie du Hibou Cosmique',
-      logo: 'icones/cosmic-owl.png',
+      logo: '/icones/cosmic-owl.png',
       seuil: 150,
       idcible: 0,
       ratio: 3,
@@ -283,7 +283,7 @@ export const origworld = {
     },
     {
       name: 'GOLB se réveille aux confins d\'Ooo',
-      logo: 'icones/golb.png',
+      logo: '/icones/golb.png',
       seuil: 1000,
       idcible: 0,
       ratio: 4,
@@ -294,7 +294,7 @@ export const origworld = {
   upgrades: [
     {
       name: 'La couronne murmure des secrets glacés',
-      logo: 'icones/ice-king-crown.png',
+      logo: '/icones/ice-king-crown.png',
       seuil: 1000,
       idcible: 1,
       ratio: 3,
@@ -303,7 +303,7 @@ export const origworld = {
     },
     {
       name: "L'ancienne vie de Simon Petrikov",
-      logo: 'icones/simon-petrikov.png',
+      logo: '/icones/simon-petrikov.png',
       seuil: 50000,
       idcible: 1,
       ratio: 4,
@@ -312,7 +312,7 @@ export const origworld = {
     },
     {
       name: 'Les épreuves du héros',
-      logo: 'icones/enchiridion.png',
+      logo: '/icones/enchiridion.png',
       seuil: 5000,
       idcible: 2,
       ratio: 3,
@@ -321,7 +321,7 @@ export const origworld = {
     },
     {
       name: 'La sagesse ancienne de Billy',
-      logo: 'icones/billy.png',
+      logo: '/icones/billy.png',
       seuil: 200000,
       idcible: 2,
       ratio: 4,
@@ -330,7 +330,7 @@ export const origworld = {
     },
     {
       name: 'Mille ans de chansons',
-      logo: 'icones/axe-bass.png',
+      logo: '/icones/axe-bass.png',
       seuil: 25000,
       idcible: 3,
       ratio: 3,
@@ -339,7 +339,7 @@ export const origworld = {
     },
     {
       name: 'Le riff de la Reine Vampire',
-      logo: 'icones/marceline.png',
+      logo: '/icones/marceline.png',
       seuil: 1000000,
       idcible: 3,
       ratio: 4,
@@ -348,7 +348,7 @@ export const origworld = {
     },
     {
       name: "L'heure de l'aventure !",
-      logo: 'icones/root-sword.png',
+      logo: '/icones/root-sword.png',
       seuil: 100000,
       idcible: 4,
       ratio: 3,
@@ -357,7 +357,7 @@ export const origworld = {
     },
     {
       name: "L'épée de racine reforgée",
-      logo: 'icones/finn.png',
+      logo: '/icones/finn.png',
       seuil: 4000000,
       idcible: 4,
       ratio: 4,
@@ -366,7 +366,7 @@ export const origworld = {
     },
     {
       name: 'Un coup de poing venu du Nightosphere',
-      logo: 'icones/gauntlet-nightosphere.png',
+      logo: '/icones/gauntlet-nightosphere.png',
       seuil: 500000,
       idcible: 5,
       ratio: 3,
@@ -375,7 +375,7 @@ export const origworld = {
     },
     {
       name: 'Forgée par la science de la Princesse',
-      logo: 'icones/golden-sword.png',
+      logo: '/icones/golden-sword.png',
       seuil: 2000000,
       idcible: 6,
       ratio: 3,
@@ -386,7 +386,7 @@ export const origworld = {
   angelupgrades: [
     {
       name: 'Le vœu de Prismo',
-      logo: 'icones/prismo.png',
+      logo: '/icones/prismo.png',
       seuil: 10,
       idcible: 0,
       ratio: 3,
@@ -395,7 +395,7 @@ export const origworld = {
     },
     {
       name: 'Le marché de la Mort',
-      logo: 'icones/death.png',
+      logo: '/icones/death.png',
       seuil: 500,
       idcible: 0,
       ratio: 4,
@@ -404,7 +404,7 @@ export const origworld = {
     },
     {
       name: 'Le rêve du Hibou Cosmique',
-      logo: 'icones/cosmic-owl.png',
+      logo: '/icones/cosmic-owl.png',
       seuil: 100000,
       idcible: -1,
       ratio: 2,
@@ -415,7 +415,7 @@ export const origworld = {
   managers: [
     {
       name: 'Simon Petrikov',
-      logo: 'icones/simon-petrikov.png',
+      logo: '/icones/simon-petrikov.png',
       seuil: 10,
       idcible: 1,
       ratio: 0,
@@ -424,7 +424,7 @@ export const origworld = {
     },
     {
       name: 'Billy le Héros',
-      logo: 'icones/billy.png',
+      logo: '/icones/billy.png',
       seuil: 15000,
       idcible: 2,
       ratio: 0,
@@ -433,7 +433,7 @@ export const origworld = {
     },
     {
       name: 'Marceline Abadeer',
-      logo: 'icones/marceline.png',
+      logo: '/icones/marceline.png',
       seuil: 330000,
       idcible: 3,
       ratio: 0,
@@ -442,7 +442,7 @@ export const origworld = {
     },
     {
       name: 'Finn le Humain',
-      logo: 'icones/finn.png',
+      logo: '/icones/finn.png',
       seuil: 6000000,
       idcible: 4,
       ratio: 0,
@@ -451,7 +451,7 @@ export const origworld = {
     },
     {
       name: 'Jake le Chien',
-      logo: 'icones/jake.png',
+      logo: '/icones/jake.png',
       seuil: 100000000,
       idcible: 5,
       ratio: 0,
@@ -460,7 +460,7 @@ export const origworld = {
     },
     {
       name: 'Princesse Chewing-Gum',
-      logo: 'icones/princess-bubblegum.png',
+      logo: '/icones/princess-bubblegum.png',
       seuil: 1700000000,
       idcible: 6,
       ratio: 0,
