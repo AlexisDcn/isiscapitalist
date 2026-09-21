@@ -41,8 +41,10 @@ export class GraphQlResolver {
     @Args('user') user: string,
     @Args('name') name: string,
   ): Promise<Palier> {
-    // a compléter
-    return null as unknown as Palier;
+    const world = this.service.readUserWorld(user);
+    const manager = this.service.engagerManager(world, name);
+    this.service.saveWorld(user, world);
+    return manager;
   }
 
   @Mutation()

@@ -45,12 +45,40 @@ export class AppService {
     return product;
   }
 
+  engagerManager(world: World, name: string): Palier {
+    const manager = this.findManager(world, name);
+
+    if (manager.unlocked) {
+      throw new Error(`Le manager ${name} est déjà engagé`);
+    }
+    if (world.money < manager.seuil) {
+      throw new Error(
+        `Argent insuffisant pour engager ${name} (coût ${manager.seuil}, argent disponible ${world.money})`,
+      );
+    }
+
+    const product = this.findProduct(world, manager.idcible);
+    world.money -= manager.seuil;
+    manager.unlocked = true;
+    product.managerUnlocked = true;
+
+    return manager;
+  }
+
   private findProduct(world: World, id: number): Product {
     const product = world.products.find((p) => p.id === id);
     if (!product) {
       throw new Error(`Le produit avec l'id ${id} n'existe pas`);
     }
     return product;
+  }
+
+  private findManager(world: World, name: string): Palier {
+    const manager = world.managers.find((m) => m.name === name);
+    if (!manager) {
+      throw new Error(`Le manager ${name} n'existe pas`);
+    }
+    return manager;
   }
 
   private checkProductUnlocks(world: World, product: Product) {
