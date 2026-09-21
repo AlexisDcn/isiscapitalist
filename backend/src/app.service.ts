@@ -66,6 +66,49 @@ export class AppService {
     return manager;
   }
 
+  acheterCashUpgrade(world: World, name: string): Palier {
+    return this.acheterUpgrade(world, world.upgrades, name, 'money');
+  }
+
+  acheterAngelUpgrade(world: World, name: string): Palier {
+    return this.acheterUpgrade(world, world.angelupgrades, name, 'activeangels');
+  }
+
+  // Logique commune à acheterCashUpgrade et acheterAngelUpgrade : seule la
+  // monnaie dépensée (argent ou anges actifs) change.
+  private acheterUpgrade(
+    world: World,
+    upgrades: Palier[],
+    name: string,
+    monnaie: 'money' | 'activeangels',
+  ): Palier {
+    const upgrade = this.findUpgrade(upgrades, name);
+
+    if (upgrade.unlocked) {
+      throw new Error(`L'amélioration ${name} est déjà débloquée`);
+    }
+    if (world[monnaie] < upgrade.seuil) {
+      const nomMonnaie = monnaie === 'money' ? 'Argent' : 'Anges';
+      throw new Error(
+        `${nomMonnaie} insuffisant pour débloquer ${name} (coût ${upgrade.seuil}, disponible ${world[monnaie]})`,
+      );
+    }
+
+    world[monnaie] -= upgrade.seuil;
+    upgrade.unlocked = true;
+    this.applyPalierBonus(world, upgrade);
+
+    return upgrade;
+  }
+
+  private findUpgrade(upgrades: Palier[], name: string): Palier {
+    const upgrade = upgrades.find((u) => u.name === name);
+    if (!upgrade) {
+      throw new Error(`L'amélioration ${name} n'existe pas`);
+    }
+    return upgrade;
+  }
+
   private findProduct(world: World, id: number): Product {
     const product = world.products.find((p) => p.id === id);
     if (!product) {

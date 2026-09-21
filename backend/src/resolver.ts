@@ -52,8 +52,10 @@ export class GraphQlResolver {
     @Args('user') user: string,
     @Args('name') name: string,
   ): Promise<Palier> {
-    // a compléter
-    return null as unknown as Palier;
+    const world = this.service.readUserWorld(user);
+    const upgrade = this.service.acheterCashUpgrade(world, name);
+    this.service.saveWorld(user, world);
+    return upgrade;
   }
 
   @Mutation()
@@ -61,8 +63,10 @@ export class GraphQlResolver {
     @Args('user') user: string,
     @Args('name') name: string,
   ): Promise<Palier> {
-    // a compléter
-    return null as unknown as Palier;
+    const world = this.service.readUserWorld(user);
+    const upgrade = this.service.acheterAngelUpgrade(world, name);
+    this.service.saveWorld(user, world);
+    return upgrade;
   }
 
   @Mutation()
