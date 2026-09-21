@@ -39,6 +39,12 @@ export class AppService {
     return product;
   }
 
+  lancerProduction(world: World, id: number): Product {
+    const product = this.findProduct(world, id);
+    product.timeleft = product.vitesse;
+    return product;
+  }
+
   private findProduct(world: World, id: number): Product {
     const product = world.products.find((p) => p.id === id);
     if (!product) {
