@@ -109,6 +109,29 @@ export class AppService {
     return upgrade;
   }
 
+  resetWorld(world: World): World {
+    const angesGagnes = this.calculerAngesGagnes(world.score);
+
+    // On repart du monde d'origine (produits, unlocks, upgrades, managers
+    // tous reinitialises), en ne conservant que le score et les compteurs
+    // d'anges, comme demande par le sujet.
+    const nouveauMonde: World = structuredClone(origworld);
+    nouveauMonde.score = world.score;
+    nouveauMonde.totalangels = world.totalangels + angesGagnes;
+    nouveauMonde.activeangels = world.activeangels + angesGagnes;
+    nouveauMonde.lastupdate = this.nowInSeconds();
+
+    return nouveauMonde;
+  }
+
+  // Le sujet ne precise pas la formule de conversion score -> anges gagnes
+  // au reset. Choix (a valider) : une croissance en racine carree, courante
+  // dans les jeux incrementaux, pour eviter que les anges n'explosent aussi
+  // vite que le score.
+  private calculerAngesGagnes(score: number): number {
+    return Math.floor(Math.sqrt(score / 1_000_000));
+  }
+
   private findProduct(world: World, id: number): Product {
     const product = world.products.find((p) => p.id === id);
     if (!product) {

@@ -71,7 +71,9 @@ export class GraphQlResolver {
 
   @Mutation()
   async resetWorld(@Args('user') user: string): Promise<World> {
-    // a compléter
-    return null as unknown as World;
+    const world = this.service.readUserWorld(user);
+    const nouveauMonde = this.service.resetWorld(world);
+    this.service.saveWorld(user, nouveauMonde);
+    return nouveauMonde;
   }
 }
