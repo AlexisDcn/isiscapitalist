@@ -25,13 +25,13 @@
 
     <div class="main">
       <div class="menu">
-        <button mat-raised-button color="primary" (click)="showUnlocks.set(true)">Unlocks</button>
+        <button mat-raised-button color="primary" (click)="modal.set('unlocks')">Unlocks</button>
         <button
           mat-raised-button
           color="primary"
           [matBadge]="badgeUpgrades()"
           [matBadgeHidden]="badgeUpgrades() === 0"
-          (click)="showUpgrades.set(true)"
+          (click)="modal.set('upgrades')"
         >
           Cash Upgrades
         </button>
@@ -40,7 +40,7 @@
           color="primary"
           [matBadge]="badgeAngelUpgrades()"
           [matBadgeHidden]="badgeAngelUpgrades() === 0"
-          (click)="showAngelUpgrades.set(true)"
+          (click)="modal.set('angels')"
         >
           Angel Upgrades
         </button>
@@ -49,11 +49,11 @@
           color="primary"
           [matBadge]="badgeManagers()"
           [matBadgeHidden]="badgeManagers() === 0"
-          (click)="showManagers.set(true)"
+          (click)="modal.set('managers')"
         >
           Managers
         </button>
-        <button mat-raised-button color="primary" (click)="showInvestors.set(true)">
+        <button mat-raised-button color="primary" (click)="modal.set('investors')">
           Investors
         </button>
       </div>
@@ -65,9 +65,12 @@
       </div>
     </div>
 
-    @if (showManagers()) {
+    @if (modal() === 'managers') {
       <div class="modal">
-        <h1 class="title">Managers make you feel better !</h1>
+        <div class="modal-head">
+          <h1 class="title">Managers make you feel better !</h1>
+          <button mat-raised-button color="primary" (click)="modal.set(null)">Close</button>
+        </div>
         @for (manager of world.managers; track manager.name) {
           @if (!manager.unlocked) {
             <div class="ligne">
@@ -88,15 +91,15 @@
             </div>
           }
         }
-        <button mat-raised-button color="primary" class="close" (click)="showManagers.set(false)">
-          Close
-        </button>
       </div>
     }
 
-    @if (showUnlocks()) {
+    @if (modal() === 'unlocks') {
       <div class="modal">
-        <h1 class="title">Want to maximize profits ? Get your investments to these quotas !</h1>
+        <div class="modal-head">
+          <h1 class="title">Want to maximize profits ? Get your investments to these quotas !</h1>
+          <button mat-raised-button color="primary" (click)="modal.set(null)">Close</button>
+        </div>
         @for (unlock of nextUnlocks(); track unlock.name) {
           <div class="ligne">
             <img class="objet" [src]="gameService.server() + unlock.logo" [alt]="unlock.name" />
@@ -109,15 +112,15 @@
         } @empty {
           <p>Tous les paliers sont débloqués !</p>
         }
-        <button mat-raised-button color="primary" class="close" (click)="showUnlocks.set(false)">
-          Close
-        </button>
       </div>
     }
 
-    @if (showUpgrades()) {
+    @if (modal() === 'upgrades') {
       <div class="modal">
-        <h1 class="title">Boost your investments !</h1>
+        <div class="modal-head">
+          <h1 class="title">Boost your investments !</h1>
+          <button mat-raised-button color="primary" (click)="modal.set(null)">Close</button>
+        </div>
         @for (upgrade of world.upgrades; track upgrade.name) {
           @if (!upgrade.unlocked) {
             <div class="ligne">
@@ -138,15 +141,15 @@
             </div>
           }
         }
-        <button mat-raised-button color="primary" class="close" (click)="showUpgrades.set(false)">
-          Close
-        </button>
       </div>
     }
 
-    @if (showAngelUpgrades()) {
+    @if (modal() === 'angels') {
       <div class="modal">
-        <h1 class="title">Spend your Angels Wisely !</h1>
+        <div class="modal-head">
+          <h1 class="title">Spend your Angels Wisely !</h1>
+          <button mat-raised-button color="primary" (click)="modal.set(null)">Close</button>
+        </div>
         <p>{{ world.activeangels }} angels available</p>
         @for (upgrade of world.angelupgrades; track upgrade.name) {
           @if (!upgrade.unlocked) {
@@ -168,20 +171,15 @@
             </div>
           }
         }
-        <button
-          mat-raised-button
-          color="primary"
-          class="close"
-          (click)="showAngelUpgrades.set(false)"
-        >
-          Close
-        </button>
       </div>
     }
 
-    @if (showInvestors()) {
+    @if (modal() === 'investors') {
       <div class="modal">
-        <h1 class="title">Angel Investors</h1>
+        <div class="modal-head">
+          <h1 class="title">Angel Investors</h1>
+          <button mat-raised-button color="primary" (click)="modal.set(null)">Close</button>
+        </div>
         <div class="investors">
           <div>
             <p>{{ world.totalangels }} Total Angels</p>
@@ -192,9 +190,6 @@
             {{ angesSupplementaires() }} angels<br />To Claim with Restart
           </button>
         </div>
-        <button mat-raised-button color="primary" class="close" (click)="showInvestors.set(false)">
-          Close
-        </button>
       </div>
     }
   </div>

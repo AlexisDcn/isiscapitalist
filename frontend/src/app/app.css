@@ -146,3 +146,27 @@
 .close {
   margin-top: 12px;
 }
+
+.modal {
+  padding-top: 0;
+}
+
+.modal-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin: 0 -24px 8px;
+  padding: 12px 24px;
+  background: white;
+  border-bottom: 1px solid #ddd;
+}
+
+.modal-head .title {
+  margin: 0;
+  padding: 0;
+  border: none;
+}

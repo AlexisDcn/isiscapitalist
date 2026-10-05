@@ -30,11 +30,8 @@ export class App {
 
   usernameDraft = this.gameService.user();
 
-  showManagers = signal(false);
-  showUnlocks = signal(false);
-  showUpgrades = signal(false);
-  showAngelUpgrades = signal(false);
-  showInvestors = signal(false);
+  // Une seule fenêtre ouverte à la fois : en ouvrir une ferme la précédente.
+  modal = signal<'managers' | 'unlocks' | 'upgrades' | 'angels' | 'investors' | null>(null);
 
   // Nombre de managers / upgrades que le joueur peut s'offrir en ce moment.
   badgeManagers = computed(() => {
@@ -87,10 +84,6 @@ export class App {
     this.gameService.refreshWorld();
   }
 
-  toggle(s: ReturnType<typeof signal<boolean>>) {
-    s.update((v) => !v);
-  }
-
   cibleDe(palier: Palier): string {
     const w = this.gameService.world();
     if (palier.idcible === -1) return 'Angel effectiveness';
@@ -111,6 +104,6 @@ export class App {
 
   async reset() {
     await this.gameService.resetWorld();
-    this.showInvestors.set(false);
+    this.modal.set(null);
   }
 }
