@@ -370,9 +370,10 @@ export class GameService {
       this.acheterProduitsError.set(false);
     } catch {
       this.acheterProduitsError.set(true);
-      this.snackmessage.set('Action refusée par le serveur, monde resynchronisé');
-      // le serveur fait foi : on reprend son état plutôt que de dériver
-      void this.refreshWorld(true);
+      // Pas de getWorld ici : en dehors du chargement, du bouton Refresh, du
+      // reset et du total d'anges (Investors), le client ne recharge pas le
+      // monde complet. Le serveur reprend la main au prochain Refresh.
+      this.snackmessage.set('Action refusée par le serveur');
     }
   }
 }

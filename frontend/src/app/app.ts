@@ -61,12 +61,27 @@ export class App {
     return [...parProduit, ...w.allunlocks.filter((u) => !u.unlocked)];
   });
 
-  // Anges supplémentaires gagnés par la partie en cours (formule du sujet).
-  angesSupplementaires = computed(() => {
+  // Le client ne connaît pas la formule des anges : le serveur tient
+  // totalangels à jour (total des anges gagnés avec le score actuel) et le
+  // client le lit dans getWorld, obtenu à l'ouverture d'Investors.
+  // Anges déjà dépensés = coût des angel upgrades achetés.
+  angesDepenses = computed(() => {
     const w = this.gameService.world();
-    if (!w) return 0;
-    const theorique = Math.floor(150 * Math.sqrt(w.score / 1e15));
-    return Math.max(0, theorique - w.totalangels);
+    return w
+      ? w.angelupgrades.filter((u) => u.unlocked).reduce((s, u) => s + u.seuil, 0)
+      : 0;
+  });
+
+  // Anges gagnés mais pas encore actifs : ils le deviennent au reset.
+  angesAReclamer = computed(() => {
+    const w = this.gameService.world();
+    return w ? Math.max(0, w.totalangels - w.activeangels - this.angesDepenses()) : 0;
+  });
+
+  // Anges déjà obtenus lors des parties précédentes (actifs ou dépensés).
+  angesObtenus = computed(() => {
+    const w = this.gameService.world();
+    return w ? w.activeangels + this.angesDepenses() : 0;
   });
 
   // La pièce d'or est une image de notre jeu : un monde distant ne la fournit

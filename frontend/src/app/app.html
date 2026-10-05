@@ -218,12 +218,12 @@
         </div>
         <div class="investors">
           <div>
-            <p>{{ world.totalangels }} Total Angels</p>
+            <p>{{ angesObtenus() }} Total Angels</p>
             <p>{{ world.activeangels }} Active Angels</p>
             <p>{{ world.angelbonus }}% Bonus Per Angel</p>
           </div>
           <button mat-raised-button color="accent" class="reset" (click)="reset()">
-            {{ angesSupplementaires() }} angels<br />To Claim with Restart
+            {{ angesAReclamer() }} angels<br />To Claim with Restart
           </button>
         </div>
       </div>

@@ -110,30 +110,46 @@ export class AppService {
   }
 
   resetWorld(world: World): World {
-    const angesGagnes = this.calculerAngesGagnes(world);
+    // totalangels est tenu à jour par le serveur (evolveWorld) : c'est le
+    // total des anges gagnés avec le score actuel, réclamés ou non.
+    const total = Math.max(world.totalangels, this.angesGagnes(world.score));
+    const depenses = this.angesDepenses(world);
 
     // On repart du monde d'origine (produits, unlocks, upgrades, managers
-    // tous reinitialises), en ne conservant que le score et les compteurs
-    // d'anges, comme demande par le sujet.
+    // tous reinitialises), en ne conservant que le score et les anges.
     const nouveauMonde: World = structuredClone(origworld);
     nouveauMonde.score = world.score;
-    nouveauMonde.totalangels = world.totalangels + angesGagnes;
-    nouveauMonde.activeangels = world.activeangels + angesGagnes;
+    nouveauMonde.totalangels = total;
+    // tous les anges gagnés deviennent actifs, moins ceux déjà dépensés
+    nouveauMonde.activeangels = Math.max(0, total - depenses);
     nouveauMonde.lastupdate = this.now();
+
+    // Les angel upgrades achetés sont permanents (leurs anges sont perdus) :
+    // on les conserve et on réapplique leur bonus au monde remis à zéro.
+    for (const achete of world.angelupgrades.filter((u) => u.unlocked)) {
+      const upgrade = nouveauMonde.angelupgrades.find((u) => u.name === achete.name);
+      if (upgrade) {
+        upgrade.unlocked = true;
+        this.applyPalierBonus(nouveauMonde, upgrade);
+      }
+    }
 
     return nouveauMonde;
   }
 
-  // Formule officielle (sujet frontend) : le nombre d'anges SUPPLEMENTAIRES
-  // gagnes par la partie en cours est 150 * sqrt(gains cumules / 10^15) -
-  // totalangels, "gains cumules" etant le score (jamais decremente). On
-  // borne a 0 : le score n'a pas assez progresse depuis le dernier reset
-  // pour justifier de nouveaux anges.
-  private calculerAngesGagnes(world: World): number {
-    const angesTheoriques = Math.floor(
-      150 * Math.sqrt(world.score / 1_000_000_000_000_000),
-    );
-    return Math.max(0, angesTheoriques - world.totalangels);
+  // Formule officielle (sujet frontend) : nombre d'anges obtenus =
+  // 150 * sqrt(gains cumules / 10^15), "gains cumules" etant le score (jamais
+  // decremente). Seul le serveur la connait : le client lit totalangels dans
+  // getWorld au lieu de la recalculer.
+  private angesGagnes(score: number): number {
+    return Math.floor(150 * Math.sqrt(score / 1_000_000_000_000_000));
+  }
+
+  // Anges déjà dépensés : coût cumulé des angel upgrades achetés.
+  private angesDepenses(world: World): number {
+    return world.angelupgrades
+      .filter((u) => u.unlocked)
+      .reduce((somme, u) => somme + u.seuil, 0);
   }
 
   private findProduct(world: World, id: number): Product {
@@ -248,6 +264,9 @@ export class AppService {
         }
       }
     }
+
+    // Le nombre total d'anges suit le score en direct ; il ne redescend jamais.
+    world.totalangels = Math.max(world.totalangels, this.angesGagnes(world.score));
 
     world.lastupdate = String(now);
   }

@@ -294,27 +294,55 @@ describe('AppService', () => {
       ).toBe(origworld.products[0].paliers[0].unlocked);
     });
 
-    it("ajoute les anges gagnés (formule officielle) à totalangels et activeangels", () => {
-      // score = 4 * 10^15 -> theorique = floor(150 * sqrt(4)) = 300
+    it('tous les anges gagnés deviennent actifs, moins ceux déjà dépensés', () => {
+      // score = 4 * 10^15 -> 150 * sqrt(4) = 300 anges au total
       const world = makeWorld({
         score: 4_000_000_000_000_000,
-        totalangels: 3,
+        totalangels: 300,
         activeangels: 1,
       });
+      // 2 anges ont déjà été dépensés dans un angel upgrade acheté
+      world.angelupgrades[0].seuil = 2;
+      world.angelupgrades[0].unlocked = true;
 
       const nouveauMonde = service.resetWorld(world);
 
-      // gagnés = 300 - 3 (ancien totalangels) = 297
-      expect(nouveauMonde.totalangels).toBe(3 + 297);
-      expect(nouveauMonde.activeangels).toBe(1 + 297);
+      expect(nouveauMonde.totalangels).toBe(300);
+      expect(nouveauMonde.activeangels).toBe(298);
     });
 
-    it("ne fait jamais gagner d'anges négatifs si le score n'a pas assez progressé", () => {
+    it("recalcule le total d'anges à partir du score même si totalangels est en retard", () => {
+      const world = makeWorld({ score: 4_000_000_000_000_000, totalangels: 3 });
+      const nouveauMonde = service.resetWorld(world);
+
+      expect(nouveauMonde.totalangels).toBe(300);
+      expect(nouveauMonde.activeangels).toBe(300);
+    });
+
+    it("ne fait jamais baisser le total d'anges si le score est faible", () => {
       const world = makeWorld({ score: 0, totalangels: 50, activeangels: 10 });
+      world.angelupgrades[0].seuil = 40;
+      world.angelupgrades[0].unlocked = true;
       const nouveauMonde = service.resetWorld(world);
 
       expect(nouveauMonde.totalangels).toBe(50);
       expect(nouveauMonde.activeangels).toBe(10);
+    });
+
+    it('conserve les angel upgrades achetés et réapplique leur bonus', () => {
+      const origine = origworld.angelupgrades[0];
+      const world = makeWorld({ score: 4_000_000_000_000_000, totalangels: 300 });
+      world.angelupgrades = [{ ...origine, unlocked: true }];
+
+      const nouveauMonde = service.resetWorld(world);
+
+      expect(
+        nouveauMonde.angelupgrades.find((u) => u.name === origine.name)?.unlocked,
+      ).toBe(true);
+      // le bonus (revenus x ratio) est réappliqué sur le monde remis à zéro
+      expect(nouveauMonde.products[0].revenu).toBe(
+        origworld.products[0].revenu * origine.ratio,
+      );
     });
   });
 
@@ -362,6 +390,16 @@ describe('AppService', () => {
         service.saveWorld('__vitest__joueur5__', w);
       }
       expect(service.readUserWorld('__vitest__joueur5__').money).toBe(50);
+    });
+
+    it('tient totalangels à jour en direct avec le score (formule côté serveur)', () => {
+      const world = makeWorld({ score: 4_000_000_000_000_000, totalangels: 0 });
+      fs.writeFileSync(
+        path.join(userworldsDir, '__vitest__joueur6__-world.json'),
+        JSON.stringify(world),
+      );
+
+      expect(service.readUserWorld('__vitest__joueur6__').totalangels).toBe(300);
     });
 
     it('calcule la production écoulée depuis lastupdate pour un monde sauvegardé', () => {
