@@ -1,19 +1,39 @@
+:host {
+  display: block;
+  min-height: 0;
+}
+
 .produit {
   display: grid;
-  grid-template-columns: 84px 1fr;
-  gap: 10px;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
   align-items: center;
-  padding: 6px 8px;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 10px 14px;
   background: rgba(255, 255, 255, 0.82);
   border-radius: 8px;
 }
 
+.gauche {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+}
+
 .objet {
-  width: 84px;
-  height: 84px;
+  width: 110px;
+  height: 110px;
   object-fit: contain;
   cursor: pointer;
   filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.45));
+}
+
+.manager {
+  width: 62px;
+  height: 90px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.4));
 }
 
 .icon {
@@ -43,12 +63,13 @@
 .droite {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  justify-content: center;
+  gap: 10px;
 }
 
 .progressbar {
   position: relative;
-  height: 30px;
+  height: 38px;
   width: 100%;
   background: #eee;
   border-radius: 4px;
@@ -65,8 +86,8 @@
   position: absolute;
   top: 0;
   left: 8px;
-  line-height: 30px;
-  font-size: 13px;
+  line-height: 38px;
+  font-size: 15px;
   color: #333;
 }
 

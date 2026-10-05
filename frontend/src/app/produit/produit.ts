@@ -34,6 +34,15 @@ export class Produit implements OnDestroy {
     return p && this.animating() ? p.vitesse * (1 - this.progress() / 100) : 0;
   });
 
+  // Le manager engagé qui gère ce produit (affiché à côté de l'objet).
+  manager = computed(() => {
+    const p = this.prod();
+    if (!p) return undefined;
+    return this.gameService
+      .world()
+      ?.managers.find((m) => m.unlocked && m.idcible === p.id);
+  });
+
   // Au-delà d'une certaine vitesse (manager + cycle très court) la barre ne
   // peut plus se remplir lisiblement : elle devient continue et on affiche le
   // gain par seconde, comme dans Adventure Capitalist.
