@@ -2,15 +2,15 @@ import { Injectable, signal } from '@angular/core';
 import { Apollo, TypedDocumentNode } from 'apollo-angular';
 import { firstValueFrom } from 'rxjs';
 import {
-  ACHETER_ANGEL_UPGRADE_MUTATION,
-  ACHETER_CASH_UPGRADE_MUTATION,
-  ACHETER_QT_PRODUIT_MUTATION,
-  ENGAGER_MANAGER_MUTATION,
-  GET_WORLD_QUERY,
-  LANCER_PRODUCTION_PRODUIT_MUTATION,
-  RESET_WORLD_MUTATION,
-} from './graphql/queries';
-import { Palier, Product, RatioType, World } from './graphql/types';
+  AcheterAngelUpgradeDocument,
+  AcheterCashUpgradeDocument,
+  AcheterQtProduitDocument,
+  EngagerManagerDocument,
+  GetWorldDocument,
+  LancerProductionProduitDocument,
+  ResetWorldDocument,
+} from './graphql/operations';
+import { Palier, Product, World } from './graphql/schema-types';
 
 type PalierSource =
   | { kind: 'productPalier'; productId: number }
@@ -66,14 +66,14 @@ export class GameService {
   async refreshWorld() {
     try {
       const { data } = await firstValueFrom(
-        this.apollo.query<{ getWorld: World }, { user: string }>({
-          query: GET_WORLD_QUERY,
+        this.apollo.query({
+          query: GetWorldDocument,
           variables: { user: this.user() },
           fetchPolicy: 'network-only',
         }),
       );
-      if (!data) throw new Error('Réponse vide du serveur');
-      this.world.set(data.getWorld);
+      if (!data?.getWorld) throw new Error('Réponse vide du serveur');
+      this.world.set(data.getWorld as World);
       this.worldVersion.update((v) => v + 1);
     } catch {
       this.snackmessage.set(
@@ -143,7 +143,7 @@ export class GameService {
   }
 
   async startProduction(product: Product) {
-    await this.mutate(LANCER_PRODUCTION_PRODUIT_MUTATION, {
+    await this.mutate(LancerProductionProduitDocument, {
       user: this.user(),
       id: product.id,
     });
@@ -164,7 +164,7 @@ export class GameService {
     this.world.set({ ...world, products: newproductlist, money: world.money - cost });
     this.checkUnlocks(product.id);
 
-    await this.mutate(ACHETER_QT_PRODUIT_MUTATION, {
+    await this.mutate(AcheterQtProduitDocument, {
       user: this.user(),
       id: product.id,
       quantite: qt,
@@ -189,7 +189,7 @@ export class GameService {
     });
     this.snackmessage.set(`${manager.name} a rejoint votre équipe !`);
 
-    await this.mutate(ENGAGER_MANAGER_MUTATION, {
+    await this.mutate(EngagerManagerDocument, {
       user: this.user(),
       name: manager.name,
     });
@@ -200,7 +200,7 @@ export class GameService {
     if (!world || world.money < upgrade.seuil || upgrade.unlocked) return;
 
     this.applyUpgrade(upgrade, { kind: 'upgrade' }, 'money');
-    await this.mutate(ACHETER_CASH_UPGRADE_MUTATION, {
+    await this.mutate(AcheterCashUpgradeDocument, {
       user: this.user(),
       name: upgrade.name,
     });
@@ -211,14 +211,14 @@ export class GameService {
     if (!world || world.activeangels < upgrade.seuil || upgrade.unlocked) return;
 
     this.applyUpgrade(upgrade, { kind: 'angelupgrade' }, 'activeangels');
-    await this.mutate(ACHETER_ANGEL_UPGRADE_MUTATION, {
+    await this.mutate(AcheterAngelUpgradeDocument, {
       user: this.user(),
       name: upgrade.name,
     });
   }
 
   async resetWorld() {
-    await this.mutate(RESET_WORLD_MUTATION, { user: this.user() });
+    await this.mutate(ResetWorldDocument, { user: this.user() });
     await this.refreshWorld();
   }
 
@@ -255,13 +255,13 @@ export class GameService {
     const produits = world.products.map((p) => {
       let mis_a_jour = p;
       if (
-        palier.typeratio === RatioType.vitesse &&
+        palier.typeratio === 'vitesse' &&
         (palier.idcible === 0 || p.id === palier.idcible)
       ) {
         mis_a_jour = { ...mis_a_jour, vitesse: mis_a_jour.vitesse / palier.ratio };
       }
       if (
-        palier.typeratio === RatioType.gain &&
+        palier.typeratio === 'gain' &&
         (palier.idcible === 0 || p.id === palier.idcible)
       ) {
         mis_a_jour = { ...mis_a_jour, revenu: mis_a_jour.revenu * palier.ratio };
@@ -278,7 +278,7 @@ export class GameService {
     });
 
     const angelbonus =
-      palier.typeratio === RatioType.ange
+      palier.typeratio === 'ange'
         ? world.angelbonus * palier.ratio
         : world.angelbonus;
 

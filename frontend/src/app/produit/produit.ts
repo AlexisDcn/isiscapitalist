@@ -12,7 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { BigValuePipe } from '../bigvalue-pipe';
 import { SecondPipe } from '../second-pipe';
 import { GameService } from '../game.service';
-import { Product } from '../graphql/types';
+import { Product } from '../graphql/schema-types';
 
 @Component({
   selector: 'app-produit',

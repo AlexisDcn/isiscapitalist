@@ -7,7 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { BigValuePipe } from './bigvalue-pipe';
 import { GameService } from './game.service';
-import { Palier, RatioType } from './graphql/types';
+import { Palier } from './graphql/schema-types';
 import { Produit } from './produit/produit';
 
 @Component({
@@ -93,9 +93,9 @@ export class App {
 
   bonusDe(palier: Palier): string {
     switch (palier.typeratio) {
-      case RatioType.vitesse:
+      case 'vitesse':
         return `SPEED x${palier.ratio}`;
-      case RatioType.gain:
+      case 'gain':
         return `PROFITS x${palier.ratio}`;
       default:
         return `+${palier.ratio}%`;
