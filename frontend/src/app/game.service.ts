@@ -63,7 +63,16 @@ export class GameService {
     this.refreshWorld();
   }
 
-  async refreshWorld() {
+  private refreshEnCours = false;
+
+  // Recharge le monde depuis le serveur. Par défaut les productions en cours
+  // sont interrompues (reset, changement de joueur, bouton Refresh) ; avec
+  // `douce`, seules les données sont remplacées et les barres de production
+  // continuent de tourner, ce qui évite de les faire clignoter à chaque
+  // petite dérive corrigée par le serveur.
+  async refreshWorld(douce = false) {
+    if (douce && this.refreshEnCours) return;
+    this.refreshEnCours = true;
     try {
       const { data } = await firstValueFrom(
         this.apollo.query({
@@ -74,11 +83,13 @@ export class GameService {
       );
       if (!data?.getWorld) throw new Error('Réponse vide du serveur');
       this.world.set(data.getWorld as World);
-      this.worldVersion.update((v) => v + 1);
+      if (!douce) this.worldVersion.update((v) => v + 1);
     } catch {
       this.snackmessage.set(
         'Erreur de communication avec le serveur pour charger le monde',
       );
+    } finally {
+      this.refreshEnCours = false;
     }
   }
 
@@ -316,7 +327,7 @@ export class GameService {
       this.acheterProduitsError.set(true);
       this.snackmessage.set('Action refusée par le serveur, monde resynchronisé');
       // le serveur fait foi : on reprend son état plutôt que de dériver
-      void this.refreshWorld();
+      void this.refreshWorld(true);
     }
   }
 }
