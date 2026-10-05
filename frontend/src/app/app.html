@@ -1,37 +1,42 @@
 @if (gameService.world(); as world) {
-  <div class="header">
-    <div class="worldname">
-      <img class="round small" [src]="gameService.server() + world.logo" [alt]="world.name" />
-      <span>{{ world.name }}</span>
-    </div>
-    <div class="money">$ {{ world.money | bigvalue }}</div>
-    <div class="multi">
-      <button mat-raised-button (click)="gameService.cycleQtMulti()">
-        Buy {{ gameService.qtmulti() }}
-      </button>
-    </div>
-    <div class="userid">
-      <mat-form-field appearance="outline">
-        <mat-label>Your ID</mat-label>
-        <input matInput [(ngModel)]="usernameDraft" (keydown.enter)="commitName()" />
-      </mat-form-field>
-      <button mat-stroked-button (click)="refresh()">Refresh</button>
-    </div>
-  </div>
-
-  <div class="main">
-    <div class="menu">
-      <button mat-raised-button color="primary">Unlocks</button>
-      <button mat-raised-button color="primary">Cash Upgrades</button>
-      <button mat-raised-button color="primary">Angel Upgrades</button>
-      <button mat-raised-button color="primary">Managers</button>
-      <button mat-raised-button color="primary">Investors</button>
+  <div
+    class="fond"
+    [style.background-image]="'url(' + gameService.server() + world.logo + ')'"
+  >
+    <div class="header">
+      <div class="worldname">{{ world.name }}</div>
+      <div class="money">
+        <img class="coin" [src]="gameService.server() + '/icones/gold-coin.png'" alt="or" />
+        <span [innerHTML]="world.money | bigvalue"></span>
+      </div>
+      <div class="multi">
+        <button mat-raised-button (click)="gameService.cycleQtMulti()">
+          Buy {{ gameService.qtmulti() }}
+        </button>
+      </div>
+      <div class="userid">
+        <mat-form-field appearance="outline">
+          <mat-label>Your ID</mat-label>
+          <input matInput [(ngModel)]="usernameDraft" (keydown.enter)="commitName()" />
+        </mat-form-field>
+        <button mat-stroked-button (click)="refresh()">Refresh</button>
+      </div>
     </div>
 
-    <div class="products">
-      @for (p of world.products; track p.id) {
-        <app-produit [prod]="p" [qtmulti]="gameService.qtmulti()"></app-produit>
-      }
+    <div class="main">
+      <div class="menu">
+        <button mat-raised-button color="primary">Unlocks</button>
+        <button mat-raised-button color="primary">Cash Upgrades</button>
+        <button mat-raised-button color="primary">Angel Upgrades</button>
+        <button mat-raised-button color="primary">Managers</button>
+        <button mat-raised-button color="primary">Investors</button>
+      </div>
+
+      <div class="products">
+        @for (p of world.products; track p.id) {
+          <app-produit [prod]="p" [qtmulti]="gameService.qtmulti()"></app-produit>
+        }
+      </div>
     </div>
   </div>
 } @else {
