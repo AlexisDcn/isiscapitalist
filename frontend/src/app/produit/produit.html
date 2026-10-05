@@ -22,6 +22,7 @@
           {{ qtmulti() }}&nbsp;: {{ gameService.numberToBuy(p) }}
           (<span [innerHTML]="p.cout | bigvalue"></span>)
         </button>
+        <span class="temps">{{ timeleft() | second }}</span>
       </div>
     </div>
   </div>

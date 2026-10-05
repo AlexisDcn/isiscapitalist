@@ -64,3 +64,81 @@
 .products {
   padding: 8px 16px;
 }
+
+.modal {
+  position: fixed;
+  z-index: 2;
+  top: 8%;
+  left: 20%;
+  width: 60%;
+  max-width: 700px;
+  max-height: 80vh;
+  overflow: auto;
+  box-sizing: border-box;
+  padding: 16px 24px;
+  background: white;
+  border: 2px solid #3f51b5;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+}
+
+.title {
+  font-size: 1.2em;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 8px;
+}
+
+.ligne {
+  display: grid;
+  grid-template-columns: 90px 1fr auto;
+  gap: 16px;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.ligne .round,
+.ligne .objet {
+  width: 80px;
+  height: 80px;
+}
+
+.ligne .round {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.ligne .objet {
+  object-fit: contain;
+}
+
+.nom {
+  font-weight: 600;
+}
+
+.cible {
+  color: #555;
+}
+
+.seuil {
+  font-size: 1.6em;
+  font-weight: bold;
+}
+
+.cout {
+  font-size: 1.2em;
+}
+
+.investors {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.reset {
+  height: 80px;
+}
+
+.close {
+  margin-top: 12px;
+}

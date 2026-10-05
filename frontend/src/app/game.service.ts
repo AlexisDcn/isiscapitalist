@@ -40,6 +40,11 @@ export class GameService {
 
   readonly acheterProduitsError = signal(false);
 
+  // Incrémenté à chaque rechargement du monde depuis le serveur : les
+  // produits s'en servent pour abandonner leurs productions en cours, qui
+  // ne correspondent plus à l'état serveur (reset, changement de joueur).
+  readonly worldVersion = signal(0);
+
   constructor(private apollo: Apollo) {
     this.refreshWorld();
   }
@@ -69,6 +74,7 @@ export class GameService {
       );
       if (!data) throw new Error('Réponse vide du serveur');
       this.world.set(data.getWorld);
+      this.worldVersion.update((v) => v + 1);
     } catch {
       this.snackmessage.set(
         'Erreur de communication avec le serveur pour charger le monde',

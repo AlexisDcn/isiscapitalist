@@ -1,16 +1,26 @@
-import { Component, inject, input, OnDestroy, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  OnDestroy,
+  signal,
+  untracked,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { BigValuePipe } from '../bigvalue-pipe';
+import { SecondPipe } from '../second-pipe';
 import { GameService } from '../game.service';
 import { Product } from '../graphql/types';
 
 @Component({
   selector: 'app-produit',
-  imports: [MatButtonModule, BigValuePipe],
+  imports: [MatButtonModule, BigValuePipe, SecondPipe],
   templateUrl: './produit.html',
   styleUrl: './produit.css',
 })
-export class Produit implements OnInit, OnDestroy {
+export class Produit implements OnDestroy {
   gameService = inject(GameService);
 
   prod = input<Product | undefined>();
@@ -18,19 +28,34 @@ export class Produit implements OnInit, OnDestroy {
 
   progress = signal(0);
 
-  private starttime = 0;
-  private animating = false;
-  private destroyed = false;
-
-  ngOnInit() {
+  // Temps restant avant la fin de la production en cours (ms).
+  timeleft = computed(() => {
     const p = this.prod();
-    if (p && (p.managerUnlocked || p.timeleft > 0)) {
-      // reprend la production en cours (ou automatique si manager) plutôt
-      // que de repartir de 0
-      const dejaEcoule = p.timeleft > 0 ? p.vitesse - p.timeleft : 0;
-      this.starttime = performance.now() - dejaEcoule;
-      this.lancerAnimation();
-    }
+    return p && this.animating() ? p.vitesse * (1 - this.progress() / 100) : 0;
+  });
+
+  private animating = signal(false);
+  private starttime = 0;
+  private destroyed = false;
+  // Change à chaque annulation : les anciennes boucles d'animation s'arrêtent.
+  private generation = 0;
+
+  constructor() {
+    // Le monde vient d'être rechargé depuis le serveur : on abandonne la
+    // production locale en cours et on reprend celle du serveur si elle existe.
+    effect(() => {
+      this.gameService.worldVersion();
+      untracked(() => this.reinitialiser());
+    });
+
+    // Un manager vient d'être engagé : la production démarre immédiatement,
+    // même si le produit n'était pas déjà en cours de fabrication.
+    effect(() => {
+      const p = this.prod();
+      if (p?.managerUnlocked && !this.animating()) {
+        untracked(() => this.demarrer(p));
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -39,41 +64,58 @@ export class Produit implements OnInit, OnDestroy {
 
   startFabrication() {
     const p = this.prod();
-    if (!p || this.animating) return;
+    if (!p || this.animating()) return;
+    this.demarrer(p);
+  }
+
+  private reinitialiser() {
+    this.generation++;
+    this.animating.set(false);
+    this.progress.set(0);
+
+    const p = this.prod();
+    if (p && p.timeleft > 0 && !p.managerUnlocked) {
+      // reprend la production en cours côté serveur plutôt que de repartir de 0
+      this.starttime = performance.now() - (p.vitesse - p.timeleft);
+      this.lancerBoucle();
+    }
+  }
+
+  private demarrer(p: Product) {
     this.starttime = performance.now();
     void this.gameService.startProduction(p);
-    this.lancerAnimation();
+    this.lancerBoucle();
   }
 
-  private lancerAnimation() {
-    this.animating = true;
-    requestAnimationFrame(this.animate);
+  private lancerBoucle() {
+    this.animating.set(true);
+    const gen = this.generation;
+    const animate = (currentTime: number) => {
+      if (this.destroyed || gen !== this.generation) return;
+      const p = this.prod();
+      if (!p) return;
+
+      const elapsed = currentTime - this.starttime;
+      const progressPercent = Math.min((elapsed / p.vitesse) * 100, 100);
+      this.progress.set(progressPercent);
+
+      if (progressPercent < 100) {
+        requestAnimationFrame(animate);
+        return;
+      }
+
+      this.progress.set(0);
+      this.gameService.productionDone(p, 1);
+
+      if (p.managerUnlocked) {
+        this.starttime = performance.now();
+        requestAnimationFrame(animate);
+      } else {
+        this.animating.set(false);
+      }
+    };
+    requestAnimationFrame(animate);
   }
-
-  private animate = (currentTime: number) => {
-    if (this.destroyed) return;
-    const p = this.prod();
-    if (!p) return;
-
-    const elapsed = currentTime - this.starttime;
-    const progressPercent = Math.min((elapsed / p.vitesse) * 100, 100);
-    this.progress.set(progressPercent);
-
-    if (progressPercent < 100) {
-      requestAnimationFrame(this.animate);
-      return;
-    }
-
-    this.progress.set(0);
-    this.gameService.productionDone(p, 1);
-
-    if (p.managerUnlocked) {
-      this.starttime = performance.now();
-      requestAnimationFrame(this.animate);
-    } else {
-      this.animating = false;
-    }
-  };
 
   acheter() {
     const p = this.prod();
