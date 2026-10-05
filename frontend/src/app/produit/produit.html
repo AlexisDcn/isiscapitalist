@@ -7,8 +7,12 @@
 
     <div class="droite">
       <div class="progressbar">
-        <div class="fill" [style.width.%]="progress()"></div>
-        <span class="gain">+<span [innerHTML]="p.revenu * p.quantite | bigvalue"></span></span>
+        <div class="fill" [class.continu]="continu()" [style.width.%]="progress()"></div>
+        @if (continu()) {
+          <span class="gain"><span [innerHTML]="gainParSeconde() | bigvalue"></span> / s</span>
+        } @else {
+          <span class="gain">+<span [innerHTML]="p.revenu * p.quantite | bigvalue"></span></span>
+        }
       </div>
 
       <div class="achat">
@@ -22,7 +26,7 @@
           {{ qtmulti() }}&nbsp;: {{ gameService.numberToBuy(p) }}
           (<span [innerHTML]="gameService.coutTotal(p, gameService.numberToBuy(p)) | bigvalue"></span>)
         </button>
-        <span class="temps">{{ timeleft() | second }}</span>
+        <span class="temps">{{ continu() ? 'continu' : (timeleft() | second) }}</span>
       </div>
     </div>
   </div>

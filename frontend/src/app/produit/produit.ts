@@ -34,6 +34,21 @@ export class Produit implements OnDestroy {
     return p && this.animating() ? p.vitesse * (1 - this.progress() / 100) : 0;
   });
 
+  // Au-delà d'une certaine vitesse (manager + cycle très court) la barre ne
+  // peut plus se remplir lisiblement : elle devient continue et on affiche le
+  // gain par seconde, comme dans Adventure Capitalist.
+  continu = computed(() => {
+    const p = this.prod();
+    return !!p && p.managerUnlocked && p.vitesse < Produit.SEUIL_CONTINU_MS;
+  });
+
+  gainParSeconde = computed(() => {
+    const p = this.prod();
+    return p ? (p.revenu * p.quantite * 1000) / p.vitesse : 0;
+  });
+
+  private static readonly SEUIL_CONTINU_MS = 300;
+
   private animating = signal(false);
   private starttime = 0;
   private destroyed = false;
@@ -97,9 +112,25 @@ export class Produit implements OnDestroy {
       if (!p) return;
 
       const elapsed = currentTime - this.starttime;
+
+      if (p.managerUnlocked) {
+        // plusieurs cycles peuvent se terminer entre deux images quand la
+        // production est très rapide : on les crédite tous d'un coup
+        const cycles = Math.floor(elapsed / p.vitesse);
+        if (cycles >= 1) {
+          this.gameService.productionDone(p, cycles);
+          this.starttime += cycles * p.vitesse;
+        }
+        const reste = currentTime - this.starttime;
+        this.progress.set(
+          this.continu() ? 100 : cycles >= 1 ? 100 : Math.min((reste / p.vitesse) * 100, 100),
+        );
+        requestAnimationFrame(animate);
+        return;
+      }
+
       const progressPercent = Math.min((elapsed / p.vitesse) * 100, 100);
       this.progress.set(progressPercent);
-
       if (progressPercent < 100) {
         requestAnimationFrame(animate);
         return;
@@ -107,19 +138,11 @@ export class Produit implements OnDestroy {
 
       // La barre reste affichée pleine pendant une frame avant de repartir.
       this.gameService.productionDone(p, 1);
-
-      if (p.managerUnlocked) {
-        // on avance du temps d'un cycle (et non "maintenant") pour ne pas
-        // perdre de temps et rester aligné sur le calcul du serveur
-        this.starttime += p.vitesse;
-        requestAnimationFrame(animate);
-      } else {
-        requestAnimationFrame(() => {
-          if (gen !== this.generation) return;
-          this.progress.set(0);
-          this.animating.set(false);
-        });
-      }
+      requestAnimationFrame(() => {
+        if (gen !== this.generation) return;
+        this.progress.set(0);
+        this.animating.set(false);
+      });
     };
     requestAnimationFrame(animate);
   }

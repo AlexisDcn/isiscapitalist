@@ -88,3 +88,22 @@
   border-radius: 4px;
   padding: 4px 6px;
 }
+
+.fill.continu {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    #4caf50 0 12px,
+    #66bb6a 12px 24px
+  );
+  background-size: 34px 34px;
+  animation: defilement 0.8s linear infinite;
+}
+
+@keyframes defilement {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 34px 0;
+  }
+}
