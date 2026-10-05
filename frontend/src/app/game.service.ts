@@ -110,8 +110,21 @@ export class GameService {
     return n;
   }
 
+  // Coût cumulé de l'achat de n exemplaires : le prix de chaque exemplaire
+  // est celui du précédent multiplié par la croissance du produit.
+  coutTotal(product: Product, n: number): number {
+    let coutUnitaire = product.cout;
+    let total = 0;
+    for (let i = 0; i < n; i++) {
+      total += coutUnitaire;
+      coutUnitaire *= product.croissance;
+    }
+    return total;
+  }
+
   canBuy(product: Product): boolean {
-    return this.numberToBuy(product) > 0;
+    const n = this.numberToBuy(product);
+    return n > 0 && (this.world()?.money ?? 0) >= this.coutTotal(product, n);
   }
 
   productionDone(product: Product, qt: number) {
@@ -140,12 +153,9 @@ export class GameService {
     const world = this.world();
     if (!world) return;
 
-    let coutUnitaire = product.cout;
-    let cost = 0;
-    for (let i = 0; i < qt; i++) {
-      cost += coutUnitaire;
-      coutUnitaire *= product.croissance;
-    }
+    const cost = this.coutTotal(product, qt);
+    if (qt <= 0 || world.money < cost) return;
+    const coutUnitaire = product.cout * Math.pow(product.croissance, qt);
 
     const newproductlist = world.products.map((p) => {
       if (p.id !== product.id) return p;

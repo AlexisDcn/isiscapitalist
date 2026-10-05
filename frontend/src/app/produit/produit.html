@@ -20,7 +20,7 @@
           (click)="acheter()"
         >
           {{ qtmulti() }}&nbsp;: {{ gameService.numberToBuy(p) }}
-          (<span [innerHTML]="p.cout | bigvalue"></span>)
+          (<span [innerHTML]="gameService.coutTotal(p, gameService.numberToBuy(p)) | bigvalue"></span>)
         </button>
         <span class="temps">{{ timeleft() | second }}</span>
       </div>

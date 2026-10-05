@@ -59,7 +59,7 @@
 .fill {
   height: 100%;
   background-color: #4caf50;
-  transition: width 0.1s linear;
+  transition: none;
 }
 
 .gain {

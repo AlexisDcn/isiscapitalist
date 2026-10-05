@@ -64,7 +64,8 @@ export class Produit implements OnDestroy {
 
   startFabrication() {
     const p = this.prod();
-    if (!p || this.animating()) return;
+    // Un produit qu'on ne possède pas encore ne peut pas produire.
+    if (!p || p.quantite <= 0 || this.animating()) return;
     this.demarrer(p);
   }
 
@@ -104,14 +105,20 @@ export class Produit implements OnDestroy {
         return;
       }
 
-      this.progress.set(0);
+      // La barre reste affichée pleine pendant une frame avant de repartir.
       this.gameService.productionDone(p, 1);
 
       if (p.managerUnlocked) {
-        this.starttime = performance.now();
+        // on avance du temps d'un cycle (et non "maintenant") pour ne pas
+        // perdre de temps et rester aligné sur le calcul du serveur
+        this.starttime += p.vitesse;
         requestAnimationFrame(animate);
       } else {
-        this.animating.set(false);
+        requestAnimationFrame(() => {
+          if (gen !== this.generation) return;
+          this.progress.set(0);
+          this.animating.set(false);
+        });
       }
     };
     requestAnimationFrame(animate);
