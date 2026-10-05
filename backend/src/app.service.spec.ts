@@ -14,7 +14,7 @@ function makeWorld(overrides: Partial<World> = {}): World {
     totalangels: 0,
     activeangels: 0,
     angelbonus: 2,
-    lastupdate: Math.floor(Date.now() / 1000),
+    lastupdate: String(Date.now()),
     products: [
       {
         id: 1,
@@ -329,12 +329,12 @@ describe('AppService', () => {
     });
 
     it("initialise lastupdate à l'instant présent pour un monde tout juste créé", () => {
-      const avant = Math.floor(Date.now() / 1000);
+      const avant = Date.now();
       const world = service.readUserWorld('__vitest__joueur3__');
-      const apres = Math.floor(Date.now() / 1000);
+      const apres = Date.now();
 
-      expect(world.lastupdate).toBeGreaterThanOrEqual(avant);
-      expect(world.lastupdate).toBeLessThanOrEqual(apres);
+      expect(Number(world.lastupdate)).toBeGreaterThanOrEqual(avant);
+      expect(Number(world.lastupdate)).toBeLessThanOrEqual(apres);
       // pas de gain aberrant calcule depuis l'epoch 0
       expect(world.money).toBe(0);
       expect(world.score).toBe(0);
@@ -343,7 +343,7 @@ describe('AppService', () => {
     it('calcule la production écoulée depuis lastupdate pour un monde sauvegardé', () => {
       const world = makeWorld({ money: 0, score: 0 });
       world.products[0].timeleft = 500; // en cours de production
-      world.lastupdate = Math.floor(Date.now() / 1000) - 1; // il y a 1s (1000ms)
+      world.lastupdate = String(Date.now() - 1000); // il y a 1s (1000ms)
 
       fs.writeFileSync(
         path.join(userworldsDir, '__vitest__joueur4__-world.json'),

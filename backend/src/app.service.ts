@@ -119,7 +119,7 @@ export class AppService {
     nouveauMonde.score = world.score;
     nouveauMonde.totalangels = world.totalangels + angesGagnes;
     nouveauMonde.activeangels = world.activeangels + angesGagnes;
-    nouveauMonde.lastupdate = this.nowInSeconds();
+    nouveauMonde.lastupdate = this.now();
 
     return nouveauMonde;
   }
@@ -221,7 +221,7 @@ export class AppService {
       const world: World = structuredClone(origworld);
       // Monde tout juste créé : rien n'a encore pu se produire, on part de
       // maintenant plutôt que de calculer une évolution depuis l'epoch 0.
-      world.lastupdate = this.nowInSeconds();
+      world.lastupdate = this.now();
       return world;
     }
   }
@@ -230,13 +230,12 @@ export class AppService {
   // mise à jour du monde et l'ajoute à l'argent et au score, puis
   // repositionne lastupdate sur l'instant courant.
   //
-  // lastupdate est stocké en SECONDES (et non en millisecondes) : le schéma
-  // GraphQL le déclare en Int, un entier 32 bits signé, qui ne peut pas
-  // représenter un timestamp epoch en millisecondes (~1.7 x 10^12 de nos
-  // jours) mais reste valide en secondes jusqu'en 2038.
+  // lastupdate est un timestamp en millisecondes transporté sous forme de
+  // chaine (type String! du schéma, commun à tous les serveurs) : un entier
+  // GraphQL 32 bits ne pourrait pas le contenir.
   private evolveWorld(world: World): void {
-    const now = this.nowInSeconds();
-    const elapseTime = Math.max(0, (now - world.lastupdate) * 1000);
+    const now = Date.now();
+    const elapseTime = Math.max(0, now - Number(world.lastupdate));
 
     if (elapseTime > 0) {
       for (const product of world.products) {
@@ -249,7 +248,7 @@ export class AppService {
       }
     }
 
-    world.lastupdate = now;
+    world.lastupdate = String(now);
   }
 
   private calculerGainProduit(world: World, product: Product): number {
@@ -260,8 +259,8 @@ export class AppService {
     );
   }
 
-  private nowInSeconds(): number {
-    return Math.floor(Date.now() / 1000);
+  private now(): string {
+    return String(Date.now());
   }
 
   saveWorld(user: string, world: World) {
