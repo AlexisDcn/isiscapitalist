@@ -74,7 +74,7 @@
         @for (manager of world.managers; track manager.name) {
           @if (!manager.unlocked) {
             <div class="ligne">
-              <img class="round" [src]="gameService.server() + manager.logo" [alt]="manager.name" />
+              <img class="objet" [src]="gameService.server() + manager.logo" [alt]="manager.name" />
               <div class="infos">
                 <div class="nom">{{ manager.name }}</div>
                 <div class="cible">{{ cibleDe(manager) }}</div>

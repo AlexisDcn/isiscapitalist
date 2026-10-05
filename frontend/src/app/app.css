@@ -100,19 +100,14 @@
   padding: 8px 0;
 }
 
-.ligne .round,
 .ligne .objet {
   width: 80px;
   height: 80px;
 }
 
-.ligne .round {
-  border-radius: 50%;
-  object-fit: cover;
-}
-
 .ligne .objet {
   object-fit: contain;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35));
 }
 
 .nom {
