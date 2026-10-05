@@ -340,6 +340,15 @@ describe('AppService', () => {
       expect(world.score).toBe(0);
     });
 
+    it("relit immédiatement ce qui vient d'être sauvegardé (pas de mise à jour perdue)", () => {
+      for (let i = 1; i <= 50; i++) {
+        const w = service.readUserWorld('__vitest__joueur5__');
+        w.money = i;
+        service.saveWorld('__vitest__joueur5__', w);
+      }
+      expect(service.readUserWorld('__vitest__joueur5__').money).toBe(50);
+    });
+
     it('calcule la production écoulée depuis lastupdate pour un monde sauvegardé', () => {
       const world = makeWorld({ money: 0, score: 0 });
       world.products[0].timeleft = 500; // en cours de production

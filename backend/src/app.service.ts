@@ -263,16 +263,18 @@ export class AppService {
     return String(Date.now());
   }
 
+  // Écriture synchrone : readUserWorld relit le fichier à la requête suivante,
+  // une écriture asynchrone pouvait ne pas être terminée et faire perdre des
+  // mises à jour quand plusieurs requêtes s'enchaînent rapidement.
   saveWorld(user: string, world: World) {
-    fs.writeFile(
-      path.join(process.cwd(), 'userworlds/', user + '-world.json'),
-      JSON.stringify(world),
-      (err) => {
-        if (err) {
-          console.error(err);
-          throw new Error(`Erreur d'écriture du monde coté serveur`);
-        }
-      },
-    );
+    try {
+      fs.writeFileSync(
+        path.join(process.cwd(), 'userworlds/', user + '-world.json'),
+        JSON.stringify(world),
+      );
+    } catch (err) {
+      console.error(err);
+      throw new Error(`Erreur d'écriture du monde coté serveur`);
+    }
   }
 }

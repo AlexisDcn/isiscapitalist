@@ -102,6 +102,13 @@ export class App {
     }
   }
 
+  // Les anges réclamables dépendent du score : on se resynchronise d'abord
+  // avec le serveur pour afficher ce que le reset accordera réellement.
+  async ouvrirInvestors() {
+    await this.gameService.refreshWorld();
+    this.modal.set('investors');
+  }
+
   async reset() {
     await this.gameService.resetWorld();
     this.modal.set(null);

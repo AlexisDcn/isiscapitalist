@@ -314,7 +314,9 @@ export class GameService {
       this.acheterProduitsError.set(false);
     } catch {
       this.acheterProduitsError.set(true);
-      this.snackmessage.set('Erreur de transmission au serveur');
+      this.snackmessage.set('Action refusée par le serveur, monde resynchronisé');
+      // le serveur fait foi : on reprend son état plutôt que de dériver
+      void this.refreshWorld();
     }
   }
 }
