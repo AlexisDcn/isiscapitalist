@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { Apollo, TypedDocumentNode } from 'apollo-angular';
 import { firstValueFrom } from 'rxjs';
 import {
@@ -11,6 +11,12 @@ import {
   ResetWorldDocument,
 } from './graphql/operations';
 import { Palier, Product, World } from './graphql/schema-types';
+import {
+  KNOWN_WORLDS,
+  normalizeServerUrl,
+  serverUrl,
+  WorldServer,
+} from './world-servers';
 
 type PalierSource =
   | { kind: 'productPalier'; productId: number }
@@ -27,7 +33,17 @@ type PalierSource =
 // reelles : un signal ecrit a la main + Apollo.query/mutate en promesses.
 @Injectable({ providedIn: 'root' })
 export class GameService {
-  readonly server = signal('http://localhost:3000');
+  // Adresse du serveur de monde courant (partagée avec le lien Apollo).
+  readonly server = serverUrl;
+
+  // Mondes proposés dans la liste : les mondes connus, plus le serveur
+  // courant s'il a été saisi à la main.
+  readonly worlds = computed<WorldServer[]>(() => {
+    const courant = this.server();
+    return KNOWN_WORLDS.some((w) => w.url === courant)
+      ? KNOWN_WORLDS
+      : [...KNOWN_WORLDS, { name: courant, url: courant }];
+  });
 
   readonly user = signal(this.initUsername());
 
@@ -63,6 +79,31 @@ export class GameService {
     this.refreshWorld();
   }
 
+  // URL complète d'une image du monde. Les serveurs ne s'accordent pas sur
+  // la forme des chemins ("icones/a.png" ou "/icones/a.png") : on garantit
+  // un seul "/" entre l'adresse du serveur et le chemin.
+  img(chemin: string | null | undefined): string {
+    if (!chemin) return '';
+    if (/^(https?:)?\/\//.test(chemin) || chemin.startsWith('data:')) return chemin;
+    return this.server() + '/' + chemin.replace(/^\/+/, '');
+  }
+
+  // Bascule sur un autre serveur de monde (interopérabilité) : le monde et
+  // les animations en cours sont abandonnés au profit de ceux du serveur.
+  async setServer(url: string) {
+    const cible = normalizeServerUrl(url);
+    if (!cible || cible === this.server()) return;
+    this.server.set(cible);
+    try {
+      localStorage.setItem('server', cible);
+    } catch {
+      // stockage indisponible : le choix ne sera juste pas mémorisé
+    }
+    this.snackmessage.set('');
+    this.world.set(undefined);
+    await this.refreshWorld();
+  }
+
   private refreshEnCours = false;
 
   // Recharge le monde depuis le serveur. Par défaut les productions en cours
@@ -78,7 +119,9 @@ export class GameService {
         this.apollo.query({
           query: GetWorldDocument,
           variables: { user: this.user() },
-          fetchPolicy: 'network-only',
+          // pas de cache : deux serveurs peuvent avoir des produits de même
+          // id, qu'un cache normalisé mélangerait
+          fetchPolicy: 'no-cache',
         }),
       );
       if (!data?.getWorld) throw new Error('Réponse vide du serveur');
@@ -288,9 +331,11 @@ export class GameService {
       return mis_a_jour;
     });
 
+    // Pour un bonus de type "ange", le sujet demande d'AJOUTER ratio au
+    // bonus actuel des anges (ex. ratio 2 : 2 % -> 4 %), pas de le multiplier.
     const angelbonus =
       palier.typeratio === 'ange'
-        ? world.angelbonus * palier.ratio
+        ? world.angelbonus + palier.ratio
         : world.angelbonus;
 
     const marquerDebloque = (liste: Palier[]) =>

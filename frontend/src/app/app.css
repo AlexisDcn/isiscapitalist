@@ -178,3 +178,46 @@
   padding: 0;
   border: none;
 }
+
+.multi {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.choixmonde {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.mondes,
+.urlserveur {
+  padding: 6px 8px;
+  border: 1px solid #9e9e9e;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #212121;
+  font: inherit;
+  max-width: 210px;
+}
+
+.urlserveur {
+  width: 180px;
+}
+
+.dollar {
+  font-size: 1.3em;
+  font-weight: bold;
+  color: #ffd54f;
+}
+
+.attente {
+  margin: 24px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 8px;
+  max-width: 480px;
+}

@@ -251,6 +251,21 @@ describe('AppService', () => {
       expect(world.products[1].revenu).toBe(150);
     });
 
+    it("un bonus de type ange AJOUTE ratio au bonus des anges (interopérabilité)", () => {
+      const world = makeWorld({ activeangels: 10, angelbonus: 2 });
+      world.angelupgrades[0] = {
+        name: 'Efficacité',
+        logo: '',
+        seuil: 5,
+        idcible: -1,
+        ratio: 3,
+        typeratio: RatioType.ange,
+        unlocked: false,
+      };
+      service.acheterAngelUpgrade(world, 'Efficacité');
+      expect(world.angelbonus).toBe(5); // 2 + 3, et non 2 * 3
+    });
+
     it("lève une erreur si les anges actifs sont insuffisants", () => {
       const world = makeWorld({ activeangels: 1 });
       expect(() =>

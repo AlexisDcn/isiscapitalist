@@ -1,4 +1,5 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
+import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -18,6 +19,7 @@ import { Produit } from './produit/produit';
     MatFormFieldModule,
     MatInputModule,
     FormsModule,
+    NgTemplateOutlet,
     BigValuePipe,
     Produit,
   ],
@@ -67,6 +69,13 @@ export class App {
     return Math.max(0, theorique - w.totalangels);
   });
 
+  // La pièce d'or est une image de notre jeu : un monde distant ne la fournit
+  // pas, on affiche alors simplement un "$".
+  coinKo = signal(false);
+
+  autreServeur = signal(false);
+  urlSaisie = '';
+
   constructor() {
     effect(() => {
       const msg = this.gameService.snackmessage();
@@ -74,6 +83,28 @@ export class App {
         this.snackBar.open(msg, 'ok', { duration: 2000 });
       }
     });
+
+    // nouveau monde : on retente la pièce d'or
+    effect(() => {
+      this.gameService.server();
+      untracked(() => this.coinKo.set(false));
+    });
+  }
+
+  changerMonde(valeur: string) {
+    if (valeur === '__autre') {
+      this.autreServeur.set(true);
+      return;
+    }
+    this.autreServeur.set(false);
+    void this.gameService.setServer(valeur);
+  }
+
+  validerServeur() {
+    if (!this.urlSaisie.trim()) return;
+    void this.gameService.setServer(this.urlSaisie);
+    this.autreServeur.set(false);
+    this.urlSaisie = '';
   }
 
   commitName() {

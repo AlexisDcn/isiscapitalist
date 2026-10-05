@@ -214,6 +214,16 @@ describe('GameService', () => {
       expect(w.products[1].revenu).toBe(15);
     });
 
+    it('un bonus de type ange ajoute ratio au bonus des anges', async () => {
+      const w = monde({ activeangels: 10, angelbonus: 2 });
+      w.angelupgrades = [
+        palier({ name: 'Efficacite', seuil: 5, idcible: -1, ratio: 3, typeratio: 'ange' }),
+      ];
+      await chargerMonde(w);
+      await service.buyAngelUpgrade(service.world()!.angelupgrades[0]);
+      expect(service.world()!.angelbonus).toBe(5); // 2 + 3 et non 2 * 3
+    });
+
     it("refuse un upgrade deja debloque ou trop cher", async () => {
       await chargerMonde(monde({ money: 10 }));
       await service.buyCashUpgrade(service.world()!.upgrades[0]);

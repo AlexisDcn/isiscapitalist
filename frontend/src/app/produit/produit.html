@@ -2,13 +2,13 @@
   <div class="produit">
     <div class="gauche">
       <div class="lesdeux icon" (click)="startFabrication()">
-        <img class="objet le_premier" [src]="gameService.server() + p.logo" [alt]="p.name" />
+        <img class="objet le_premier" [src]="gameService.img(p.logo)" [alt]="p.name" />
         <div class="quantite le_second">{{ p.quantite }}</div>
       </div>
       @if (manager(); as m) {
         <img
           class="manager"
-          [src]="gameService.server() + m.logo"
+          [src]="gameService.img(m.logo)"
           [alt]="m.name"
           [title]="m.name"
         />

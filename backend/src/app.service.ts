@@ -184,7 +184,8 @@ export class AppService {
         });
         break;
       case RatioType.ange:
-        world.angelbonus = world.angelbonus * palier.ratio;
+        // le sujet demande d'AJOUTER ratio au bonus actuel des anges
+        world.angelbonus = world.angelbonus + palier.ratio;
         break;
     }
   }

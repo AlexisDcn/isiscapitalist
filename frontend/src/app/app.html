@@ -1,18 +1,54 @@
+<ng-template #choixMonde>
+  <div class="choixmonde">
+    <select
+      class="mondes"
+      aria-label="Monde"
+      [value]="gameService.server()"
+      (change)="changerMonde($any($event.target).value)"
+    >
+      @for (w of gameService.worlds(); track w.url) {
+        <option [value]="w.url" [selected]="w.url === gameService.server()">{{ w.name }}</option>
+      }
+      <option value="__autre">Autre serveur…</option>
+    </select>
+    @if (autreServeur()) {
+      <input
+        class="urlserveur"
+        type="url"
+        placeholder="https://mon-serveur.fr"
+        [(ngModel)]="urlSaisie"
+        (keydown.enter)="validerServeur()"
+      />
+      <button mat-stroked-button (click)="validerServeur()">OK</button>
+    }
+  </div>
+</ng-template>
+
 @if (gameService.world(); as world) {
   <div
     class="fond"
-    [style.background-image]="'url(' + gameService.server() + world.logo + ')'"
+    [style.background-image]="'url(' + gameService.img(world.logo) + ')'"
   >
     <div class="header">
       <div class="worldname">{{ world.name }}</div>
       <div class="money">
-        <img class="coin" [src]="gameService.server() + '/icones/gold-coin.png'" alt="or" />
+        @if (!coinKo()) {
+          <img
+            class="coin"
+            [src]="gameService.img('/icones/gold-coin.png')"
+            alt="or"
+            (error)="coinKo.set(true)"
+          />
+        } @else {
+          <span class="dollar">$</span>
+        }
         <span [innerHTML]="world.money | bigvalue"></span>
       </div>
       <div class="multi">
         <button mat-raised-button (click)="gameService.cycleQtMulti()">
           Buy {{ gameService.qtmulti() }}
         </button>
+        <ng-container *ngTemplateOutlet="choixMonde"></ng-container>
       </div>
       <div class="userid">
         <mat-form-field appearance="outline">
@@ -74,7 +110,7 @@
         @for (manager of world.managers; track manager.name) {
           @if (!manager.unlocked) {
             <div class="ligne">
-              <img class="objet" [src]="gameService.server() + manager.logo" [alt]="manager.name" />
+              <img class="objet" [src]="gameService.img(manager.logo)" [alt]="manager.name" />
               <div class="infos">
                 <div class="nom">{{ manager.name }}</div>
                 <div class="cible">{{ cibleDe(manager) }}</div>
@@ -102,7 +138,7 @@
         </div>
         @for (unlock of nextUnlocks(); track unlock.name) {
           <div class="ligne">
-            <img class="objet" [src]="gameService.server() + unlock.logo" [alt]="unlock.name" />
+            <img class="objet" [src]="gameService.img(unlock.logo)" [alt]="unlock.name" />
             <div class="infos">
               <div class="nom">{{ unlock.name }}</div>
               <div class="seuil">{{ unlock.seuil }}</div>
@@ -124,7 +160,7 @@
         @for (upgrade of world.upgrades; track upgrade.name) {
           @if (!upgrade.unlocked) {
             <div class="ligne">
-              <img class="objet" [src]="gameService.server() + upgrade.logo" [alt]="upgrade.name" />
+              <img class="objet" [src]="gameService.img(upgrade.logo)" [alt]="upgrade.name" />
               <div class="infos">
                 <div class="nom">{{ upgrade.name }}</div>
                 <div class="cout"><span [innerHTML]="upgrade.seuil | bigvalue"></span> $</div>
@@ -154,7 +190,7 @@
         @for (upgrade of world.angelupgrades; track upgrade.name) {
           @if (!upgrade.unlocked) {
             <div class="ligne">
-              <img class="objet" [src]="gameService.server() + upgrade.logo" [alt]="upgrade.name" />
+              <img class="objet" [src]="gameService.img(upgrade.logo)" [alt]="upgrade.name" />
               <div class="infos">
                 <div class="nom">{{ upgrade.name }}</div>
                 <div class="cout"><span [innerHTML]="upgrade.seuil | bigvalue"></span> angels</div>
@@ -194,5 +230,8 @@
     }
   </div>
 } @else {
-  <p>Chargement du monde...</p>
+  <div class="attente">
+    <p>Chargement du monde… (si le serveur ne répond pas, choisissez un autre monde)</p>
+    <ng-container *ngTemplateOutlet="choixMonde"></ng-container>
+  </div>
 }
