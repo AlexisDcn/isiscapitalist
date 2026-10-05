@@ -1,0 +1,81 @@
+.produit {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.round {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.icon {
+  cursor: pointer;
+}
+
+.lesdeux {
+  position: relative;
+}
+
+.le_second {
+  position: absolute;
+  bottom: -6px;
+  right: -6px;
+  background: #3f51b5;
+  color: white;
+  border-radius: 50%;
+  min-width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  padding: 0 4px;
+}
+
+.droite {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.progressbar {
+  position: relative;
+  height: 30px;
+  width: 100%;
+  background: #eee;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  background-color: #4caf50;
+  transition: width 0.1s linear;
+}
+
+.gain {
+  position: absolute;
+  top: 0;
+  left: 8px;
+  line-height: 30px;
+  font-size: 13px;
+  color: #333;
+}
+
+.achat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.name {
+  font-weight: 500;
+}

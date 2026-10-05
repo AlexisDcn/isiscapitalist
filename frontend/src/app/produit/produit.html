@@ -1,0 +1,27 @@
+@if (prod(); as p) {
+  <div class="produit">
+    <div class="lesdeux icon" (click)="startFabrication()">
+      <img class="round le_premier" [src]="gameService.server() + p.logo" [alt]="p.name" />
+      <div class="quantite le_second">{{ p.quantite }}</div>
+    </div>
+
+    <div class="droite">
+      <div class="progressbar">
+        <div class="fill" [style.width.%]="progress()"></div>
+        <span class="gain">+{{ (p.revenu * p.quantite) | bigvalue }}</span>
+      </div>
+
+      <div class="achat">
+        <span class="name">{{ p.name }}</span>
+        <button
+          mat-raised-button
+          color="primary"
+          [disabled]="!gameService.canBuy(p)"
+          (click)="acheter()"
+        >
+          {{ qtmulti() }}&nbsp;: {{ gameService.numberToBuy(p) }} ({{ p.cout | bigvalue }}$)
+        </button>
+      </div>
+    </div>
+  </div>
+}

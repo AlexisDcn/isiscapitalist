@@ -1,0 +1,62 @@
+:host {
+  display: block;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: 25% 25% 25% 25%;
+  align-items: center;
+  padding: 12px 16px;
+  background: #3f51b5;
+  color: white;
+}
+
+.worldname {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.2em;
+  font-weight: 600;
+}
+
+.round {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.small {
+  width: 40px;
+  height: 40px;
+}
+
+.money {
+  font-size: 1.4em;
+  font-weight: bold;
+}
+
+.userid {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.userid mat-form-field {
+  width: 140px;
+}
+
+.main {
+  display: grid;
+  grid-template-columns: 20% 80%;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+}
+
+.products {
+  padding: 8px 16px;
+}
