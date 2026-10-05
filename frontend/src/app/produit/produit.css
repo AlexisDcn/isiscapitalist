@@ -1,17 +1,16 @@
 .produit {
   display: grid;
-  grid-template-columns: 100px 1fr;
-  gap: 12px;
+  grid-template-columns: 84px 1fr;
+  gap: 10px;
   align-items: center;
-  padding: 8px;
+  padding: 6px 8px;
   background: rgba(255, 255, 255, 0.82);
   border-radius: 8px;
-  margin-bottom: 8px;
 }
 
 .objet {
-  width: 100px;
-  height: 100px;
+  width: 84px;
+  height: 84px;
   object-fit: contain;
   cursor: pointer;
   filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.45));
@@ -73,9 +72,10 @@
 
 .achat {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  gap: 4px 8px;
 }
 
 .name {
