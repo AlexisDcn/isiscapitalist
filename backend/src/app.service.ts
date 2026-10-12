@@ -230,7 +230,11 @@ export class AppService {
       this.evolveWorld(world);
       return world;
     } catch (e: unknown) {
-      console.log((e as Error).message);
+      // Pas encore de sauvegarde = nouveau joueur, c'est le cas normal ;
+      // on ne signale que les vraies erreurs (fichier illisible, JSON abîmé).
+      if ((e as NodeJS.ErrnoException).code !== 'ENOENT') {
+        console.log((e as Error).message);
+      }
       // structuredClone : origworld est un module partagé par tous les
       // utilisateurs, il ne faut jamais le muter directement (sinon les
       // achats du premier joueur sans sauvegarde pollueraient le monde
