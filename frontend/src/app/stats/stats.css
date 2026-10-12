@@ -1,0 +1,47 @@
+.carte {
+  background: var(--paper);
+  border: 4px solid var(--ink);
+  border-radius: 22px;
+  padding: 8px 12px 10px;
+  box-shadow: 0 6px 0 var(--ink);
+}
+
+.finn {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 200px;
+}
+
+.titre {
+  font-family: var(--display);
+  font-size: 21px;
+  fill: var(--ink);
+}
+
+.titre.blanc {
+  font-size: 24px;
+  fill: #fff;
+  stroke: var(--ink);
+  stroke-width: 1.2px;
+  paint-order: stroke;
+}
+
+.chiffres {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 8px;
+  margin: 6px 0 0;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.chiffres dt {
+  margin: 0;
+}
+
+.chiffres dd {
+  margin: 0;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}

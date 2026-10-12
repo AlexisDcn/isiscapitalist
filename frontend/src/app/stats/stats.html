@@ -1,0 +1,53 @@
+<section class="carte" aria-label="Swag and Stats">
+  <!-- Finn brandit le panneau à bout de bras -->
+  <svg class="finn" viewBox="0 0 170 200" role="img" aria-label="Finn holding the Swag and Stats sign">
+    <!-- bras levés (derrière le panneau) -->
+    <path d="M66 134 L44 66" stroke="#2b1d14" stroke-width="13" stroke-linecap="round" />
+    <path d="M66 134 L44 66" stroke="#fbd0b0" stroke-width="7" stroke-linecap="round" />
+    <path d="M104 134 L126 66" stroke="#2b1d14" stroke-width="13" stroke-linecap="round" />
+    <path d="M104 134 L126 66" stroke="#fbd0b0" stroke-width="7" stroke-linecap="round" />
+
+    <!-- panneau jaune Jake -->
+    <rect x="22" y="12" width="138" height="52" rx="16" fill="#fdb827" stroke="#2b1d14" stroke-width="4" />
+    <text x="98" y="35" text-anchor="middle" class="titre">Swag and</text>
+    <text x="98" y="58" text-anchor="middle" class="titre blanc">Stats</text>
+    <!-- tête de Jake dans le coin du panneau -->
+    <svg x="0" y="0" width="54" height="45" viewBox="0 0 60 50"><use href="#jakehead" /></svg>
+
+    <!-- mains qui tiennent le panneau -->
+    <circle cx="44" cy="64" r="7.5" fill="#fbd0b0" stroke="#2b1d14" stroke-width="3" />
+    <circle cx="126" cy="64" r="7.5" fill="#fbd0b0" stroke="#2b1d14" stroke-width="3" />
+
+    <!-- bonnet blanc à oreilles -->
+    <circle cx="67" cy="82" r="9" fill="#fff" stroke="#2b1d14" stroke-width="3.5" />
+    <circle cx="103" cy="82" r="9" fill="#fff" stroke="#2b1d14" stroke-width="3.5" />
+    <rect x="57" y="78" width="56" height="58" rx="24" fill="#fff" stroke="#2b1d14" stroke-width="4" />
+    <!-- visage -->
+    <rect x="66" y="93" width="38" height="31" rx="11" fill="#fbd0b0" stroke="#2b1d14" stroke-width="3" />
+    <circle cx="78" cy="106" r="2.4" fill="#2b1d14" />
+    <circle cx="92" cy="106" r="2.4" fill="#2b1d14" />
+    <path d="M78 113 Q85 119 92 113 Z" fill="#fff" stroke="#2b1d14" stroke-width="2.2" stroke-linejoin="round" />
+
+    <!-- t-shirt bleu clair et bretelles vertes du sac -->
+    <rect x="64" y="134" width="42" height="30" rx="6" fill="#7ec8f0" stroke="#2b1d14" stroke-width="4" />
+    <path d="M73 136 V162 M97 136 V162" stroke="#4caf50" stroke-width="4" />
+    <!-- short bleu foncé -->
+    <rect x="64" y="160" width="42" height="12" rx="3" fill="#2f5fb3" stroke="#2b1d14" stroke-width="4" />
+    <!-- jambes et chaussures -->
+    <rect x="72" y="172" width="8" height="15" fill="#fff" stroke="#2b1d14" stroke-width="3" />
+    <rect x="90" y="172" width="8" height="15" fill="#fff" stroke="#2b1d14" stroke-width="3" />
+    <ellipse cx="74" cy="191" rx="10" ry="5.5" fill="#2b1d14" />
+    <ellipse cx="96" cy="191" rx="10" ry="5.5" fill="#2b1d14" />
+  </svg>
+
+  <dl class="chiffres">
+    <dt>Total treasure</dt>
+    <dd>$<span [innerHTML]="tresor() | bigvalue"></span></dd>
+    <dt>Businesses</dt>
+    <dd>{{ businesses() }}</dd>
+    <dt>Prismo's Wishes</dt>
+    <dd>{{ voeux() }}</dd>
+    <dt>Play time</dt>
+    <dd>{{ tempsDeJeu() }}</dd>
+  </dl>
+</section>

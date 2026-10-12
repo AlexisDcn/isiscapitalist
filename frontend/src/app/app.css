@@ -14,9 +14,16 @@
   margin: 0 auto;
 }
 
+/* Colonne de gauche : carte de stats de Finn au-dessus du menu */
+.colonne {
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
 /* Menu : le sac à dos de Finn */
 .menu {
-  align-self: start;
   display: flex;
   flex-direction: column;
   gap: 10px;

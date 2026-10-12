@@ -69,6 +69,8 @@
 
 @if (gameService.world(); as world) {
   <div class="app">
+    <div class="colonne">
+    <app-stats></app-stats>
     <nav class="menu" aria-label="Game menu">
       <h2>Finn's Pack</h2>
       <button type="button" (click)="modal.set('unlocks')">Unlocks</button>
@@ -94,6 +96,7 @@
         <span class="double">Prismo's Wishes<small>Angel investors</small></span>
       </button>
     </nav>
+    </div>
 
     <main class="main">
       <section class="top">

@@ -7,10 +7,11 @@ import { GameService } from './game.service';
 import { Palier } from './graphql/schema-types';
 import { Produit } from './produit/produit';
 import { SoundService } from './sound.service';
+import { Stats } from './stats/stats';
 
 @Component({
   selector: 'app-root',
-  imports: [FormsModule, NgTemplateOutlet, BigValuePipe, Produit],
+  imports: [FormsModule, NgTemplateOutlet, BigValuePipe, Produit, Stats],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
