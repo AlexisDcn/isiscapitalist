@@ -5,11 +5,11 @@ export interface WorldServer {
   url: string;
 }
 
-// Serveurs de mondes connus. Tous exposent le même schéma GraphQL (point
-// d'accès /graphql) et servent leurs images sous /icones, ce qui permet au
-// même client de naviguer de l'un à l'autre.
-export const KNOWN_WORLDS: WorldServer[] = [
-  { name: 'The Land of Ooo (local)', url: 'http://localhost:3000' },
+// Mondes proposés au premier lancement. Tous exposent le même schéma GraphQL
+// (point d'accès /graphql) et servent leurs images sous /icones, ce qui
+// permet au même client de naviguer de l'un à l'autre.
+export const DEFAULT_WORLDS: WorldServer[] = [
+  { name: 'Adventure Time Capitalist (local)', url: 'http://localhost:3000' },
   { name: 'Nuka Capitalist', url: 'https://capitalist.lucaslopvet.fr' },
 ];
 
@@ -21,16 +21,48 @@ export function normalizeServerUrl(url: string): string {
     .replace(/\/graphql$/i, '');
 }
 
-function initialServer(): string {
+function lire(cle: string): string | null {
   try {
-    const stocke = localStorage.getItem('server');
-    if (stocke) return normalizeServerUrl(stocke);
+    return localStorage.getItem(cle);
   } catch {
-    // stockage indisponible : on garde le serveur par défaut
+    return null;
   }
-  return KNOWN_WORLDS[0].url;
+}
+
+function ecrire(cle: string, valeur: string) {
+  try {
+    localStorage.setItem(cle, valeur);
+  } catch {
+    // stockage indisponible : le choix ne sera juste pas mémorisé
+  }
+}
+
+function initialWorlds(): WorldServer[] {
+  try {
+    const liste = JSON.parse(lire('worlds') ?? 'null');
+    if (Array.isArray(liste) && liste.length > 0) return liste;
+  } catch {
+    // liste illisible : on repart des mondes par défaut
+  }
+  return DEFAULT_WORLDS;
+}
+
+// Liste des mondes enregistrés par le joueur (ajouts et suppressions
+// mémorisés dans le navigateur).
+export const worldList = signal<WorldServer[]>(initialWorlds());
+
+export function saveWorldList(liste: WorldServer[]) {
+  worldList.set(liste);
+  ecrire('worlds', JSON.stringify(liste));
 }
 
 // Adresse du serveur courant. Lue à chaque requête par le lien HTTP d'Apollo,
 // ce qui permet de changer de monde sans recréer le client.
-export const serverUrl = signal(initialServer());
+export const serverUrl = signal(
+  normalizeServerUrl(lire('server') ?? '') || worldList()[0]?.url || DEFAULT_WORLDS[0].url,
+);
+
+export function saveServerUrl(url: string) {
+  serverUrl.set(url);
+  ecrire('server', url);
+}

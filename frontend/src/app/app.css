@@ -236,3 +236,25 @@
   border-radius: 8px;
   max-width: 480px;
 }
+
+.boutons {
+  display: flex;
+  gap: 6px;
+}
+
+.musique {
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.petit {
+  min-width: 30px;
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid #9e9e9e;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #212121;
+  font: inherit;
+  font-weight: bold;
+  cursor: pointer;
+}

@@ -1,4 +1,4 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Apollo, TypedDocumentNode } from 'apollo-angular';
 import { firstValueFrom } from 'rxjs';
 import {
@@ -12,10 +12,11 @@ import {
 } from './graphql/operations';
 import { Palier, Product, World } from './graphql/schema-types';
 import {
-  KNOWN_WORLDS,
   normalizeServerUrl,
+  saveServerUrl,
+  saveWorldList,
   serverUrl,
-  WorldServer,
+  worldList,
 } from './world-servers';
 
 type PalierSource =
@@ -34,22 +35,22 @@ type PalierSource =
 @Injectable({ providedIn: 'root' })
 export class GameService {
   // Adresse du serveur de monde courant (partagée avec le lien Apollo).
-  readonly server = serverUrl;
+  readonly server = serverUrl.asReadonly();
 
-  // Mondes proposés dans la liste : les mondes connus, plus le serveur
-  // courant s'il a été saisi à la main.
-  readonly worlds = computed<WorldServer[]>(() => {
-    const courant = this.server();
-    return KNOWN_WORLDS.some((w) => w.url === courant)
-      ? KNOWN_WORLDS
-      : [...KNOWN_WORLDS, { name: courant, url: courant }];
-  });
+  // Mondes enregistrés (liste modifiable par le joueur).
+  readonly worlds = worldList.asReadonly();
 
   readonly user = signal(this.initUsername());
 
   readonly world = signal<World | undefined>(undefined);
 
-  readonly snackmessage = signal('');
+  // Message éphémère à afficher. Le compteur garantit qu'un même texte
+  // (deux achats identiques de suite) déclenche quand même un nouvel affichage.
+  readonly snackmessage = signal<{ texte: string; n: number }>({ texte: '', n: 0 });
+
+  notify(texte: string) {
+    this.snackmessage.update((m) => ({ texte, n: m.n + 1 }));
+  }
 
   // x1 -> x10 -> x100 -> Max -> x1 ...
   readonly qtmulti = signal<'x1' | 'x10' | 'x100' | 'Max'>('x1');
@@ -69,6 +70,9 @@ export class GameService {
     let username = localStorage.getItem('username');
     if (!username) {
       username = 'Captain' + Math.floor(Math.random() * 10000);
+      // mémorisé tout de suite : sinon chaque rechargement tirerait un
+      // nouveau pseudo et le joueur perdrait son monde
+      localStorage.setItem('username', username);
     }
     return username;
   }
@@ -90,18 +94,46 @@ export class GameService {
 
   // Bascule sur un autre serveur de monde (interopérabilité) : le monde et
   // les animations en cours sont abandonnés au profit de ceux du serveur.
-  async setServer(url: string) {
+  // Renvoie false si le serveur n'a pas fourni de monde.
+  async setServer(url: string): Promise<boolean> {
     const cible = normalizeServerUrl(url);
-    if (!cible || cible === this.server()) return;
-    this.server.set(cible);
-    try {
-      localStorage.setItem('server', cible);
-    } catch {
-      // stockage indisponible : le choix ne sera juste pas mémorisé
-    }
-    this.snackmessage.set('');
+    if (!cible) return false;
+    if (cible === this.server() && this.world()) return true;
+    saveServerUrl(cible);
     this.world.set(undefined);
-    await this.refreshWorld();
+    return this.refreshWorld();
+  }
+
+  // Ajoute un monde : il n'est gardé dans la liste que si son serveur répond
+  // avec un monde ; sinon on revient au monde précédent.
+  async addWorld(url: string): Promise<boolean> {
+    const cible = normalizeServerUrl(url);
+    if (!cible) return false;
+    const precedent = this.server();
+    if (await this.setServer(cible)) {
+      if (!this.worlds().some((w) => w.url === cible)) {
+        saveWorldList([...this.worlds(), { name: this.world()!.name, url: cible }]);
+      }
+      this.notify(`World "${this.world()!.name}" added`);
+      return true;
+    }
+    this.notify(`No world found at ${cible}`);
+    await this.setServer(precedent);
+    return false;
+  }
+
+  // Retire un monde de la liste ; si c'était le monde affiché, on passe au
+  // premier monde restant.
+  async removeWorld(url: string) {
+    const restants = this.worlds().filter((w) => w.url !== url);
+    if (restants.length === 0) {
+      this.notify('At least one world must remain');
+      return;
+    }
+    const nom = this.worlds().find((w) => w.url === url)?.name ?? url;
+    saveWorldList(restants);
+    this.notify(`World "${nom}" removed`);
+    if (url === this.server()) await this.setServer(restants[0].url);
   }
 
   private refreshEnCours = false;
@@ -111,8 +143,8 @@ export class GameService {
   // `douce`, seules les données sont remplacées et les barres de production
   // continuent de tourner, ce qui évite de les faire clignoter à chaque
   // petite dérive corrigée par le serveur.
-  async refreshWorld(douce = false) {
-    if (douce && this.refreshEnCours) return;
+  async refreshWorld(douce = false): Promise<boolean> {
+    if (douce && this.refreshEnCours) return true;
     this.refreshEnCours = true;
     try {
       const { data } = await firstValueFrom(
@@ -127,10 +159,10 @@ export class GameService {
       if (!data?.getWorld) throw new Error('Empty response from the server');
       this.world.set(data.getWorld as World);
       if (!douce) this.worldVersion.update((v) => v + 1);
+      return true;
     } catch {
-      this.snackmessage.set(
-        'Could not load the world from the server',
-      );
+      this.notify('Could not load the world from the server');
+      return false;
     } finally {
       this.refreshEnCours = false;
     }
@@ -216,6 +248,7 @@ export class GameService {
       return { ...p, quantite: p.quantite + qt, cout: coutUnitaire };
     });
     this.world.set({ ...world, products: newproductlist, money: world.money - cost });
+    this.notify(`Bought ${qt} ${product.name}`);
     this.checkUnlocks(product.id);
 
     await this.mutate(AcheterQtProduitDocument, {
@@ -241,7 +274,7 @@ export class GameService {
       managers: newmanagers,
       money: world.money - manager.seuil,
     });
-    this.snackmessage.set(`${manager.name} joined your team!`);
+    this.notify(`${manager.name} joined your team!`);
 
     await this.mutate(EngagerManagerDocument, {
       user: this.user(),
@@ -272,8 +305,12 @@ export class GameService {
   }
 
   async resetWorld() {
+    const avant = this.world()?.activeangels ?? 0;
     await this.mutate(ResetWorldDocument, { user: this.user() });
-    await this.refreshWorld();
+    if (await this.refreshWorld()) {
+      const gagnes = (this.world()?.activeangels ?? 0) - avant;
+      this.notify(`World reset: ${gagnes} new angel${gagnes > 1 ? 's' : ''} active`);
+    }
   }
 
   // ---- unlocks / upgrades : logique de bonus partagée ----
@@ -356,7 +393,7 @@ export class GameService {
         source.kind === 'angelupgrade' ? marquerDebloque(world.angelupgrades) : world.angelupgrades,
     });
 
-    this.snackmessage.set(`${palier.name} unlocked!`);
+    this.notify(`${palier.name} unlocked!`);
   }
 
   private async mutate<TData, TVariables extends object>(
@@ -373,7 +410,7 @@ export class GameService {
       // Pas de getWorld ici : en dehors du chargement, du bouton Refresh, du
       // reset et du total d'anges (Investors), le client ne recharge pas le
       // monde complet. Le serveur reprend la main au prochain Refresh.
-      this.snackmessage.set('Action rejected by the server');
+      this.notify('Action rejected by the server');
     }
   }
 }

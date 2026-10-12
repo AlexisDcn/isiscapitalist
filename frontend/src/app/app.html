@@ -9,17 +9,23 @@
       @for (w of gameService.worlds(); track w.url) {
         <option [value]="w.url" [selected]="w.url === gameService.server()">{{ w.name }}</option>
       }
-      <option value="__autre">Other server…</option>
     </select>
-    @if (autreServeur()) {
+    <button class="petit" type="button" title="Add a world" (click)="ajoutMonde.set(!ajoutMonde())">
+      +
+    </button>
+    <button class="petit" type="button" title="Remove this world" (click)="supprimerMonde()">
+      &minus;
+    </button>
+    @if (ajoutMonde()) {
       <input
         class="urlserveur"
         type="url"
         placeholder="https://my-server.com"
+        aria-label="New world server address"
         [(ngModel)]="urlSaisie"
-        (keydown.enter)="validerServeur()"
+        (keydown.enter)="validerMonde()"
       />
-      <button mat-stroked-button (click)="validerServeur()">OK</button>
+      <button class="petit" type="button" (click)="validerMonde()">OK</button>
     }
   </div>
 </ng-template>
@@ -45,9 +51,14 @@
         <span [innerHTML]="world.money | bigvalue"></span>
       </div>
       <div class="multi">
-        <button mat-raised-button (click)="gameService.cycleQtMulti()">
-          Buy {{ gameService.qtmulti() }}
-        </button>
+        <div class="boutons">
+          <button mat-raised-button (click)="gameService.cycleQtMulti()">
+            Buy {{ gameService.qtmulti() }}
+          </button>
+          <button mat-stroked-button class="musique" (click)="basculerMusique()">
+            Music: {{ musique() ? 'on' : 'off' }}
+          </button>
+        </div>
         <ng-container *ngTemplateOutlet="choixMonde"></ng-container>
       </div>
       <div class="userid">

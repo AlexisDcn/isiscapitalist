@@ -21,7 +21,7 @@
         @if (continu()) {
           <span class="gain"><span [innerHTML]="gainParSeconde() | bigvalue"></span> / s</span>
         } @else {
-          <span class="gain">+<span [innerHTML]="p.revenu * p.quantite | bigvalue"></span></span>
+          <span class="gain">+<span [innerHTML]="gainParCycle() | bigvalue"></span></span>
         }
       </div>
 

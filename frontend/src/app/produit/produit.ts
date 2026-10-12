@@ -51,9 +51,18 @@ export class Produit implements OnDestroy {
     return !!p && p.managerUnlocked && p.vitesse < Produit.SEUIL_CONTINU_MS;
   });
 
+  // Gain d'une production, bonus des anges actifs compris (c'est ce qui est
+  // réellement crédité) : il augmente donc visiblement après un reset.
+  gainParCycle = computed(() => {
+    const p = this.prod();
+    const w = this.gameService.world();
+    if (!p || !w) return 0;
+    return p.revenu * p.quantite * (1 + (w.activeangels * w.angelbonus) / 100);
+  });
+
   gainParSeconde = computed(() => {
     const p = this.prod();
-    return p ? (p.revenu * p.quantite * 1000) / p.vitesse : 0;
+    return p ? (this.gainParCycle() * 1000) / p.vitesse : 0;
   });
 
   private static readonly SEUIL_CONTINU_MS = 300;

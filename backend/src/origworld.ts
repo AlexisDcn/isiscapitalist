@@ -5,8 +5,8 @@ import { RatioType } from './graphql.js';
 // crown before the Great Mushroom War to Finn's golden sword in the latest
 // arcs). Each product is run by the character linked to that object.
 export const origworld = {
-  name: 'The Land of Ooo',
-  logo: '/icones/ooo-map.png',
+  name: 'Adventure Time Capitalist',
+  logo: '/icones/pfp-jake.png',
   money: 0,
   score: 0,
   totalangels: 0,

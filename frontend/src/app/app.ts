@@ -88,39 +88,85 @@ export class App {
   // quel que soit le monde ; si le fichier manque, on affiche un "$".
   coinKo = signal(false);
 
-  autreServeur = signal(false);
+  ajoutMonde = signal(false);
   urlSaisie = '';
+
+  // Musique de fond commune à tous les mondes (frontend/public/music.mp3).
+  // Les navigateurs interdisent la lecture automatique sans interaction : si
+  // le joueur l'avait activée, elle démarre au premier clic dans la page.
+  musique = signal(this.lireMusique());
+  private audio = new Audio('/music.mp3');
 
   constructor() {
     effect(() => {
       const msg = this.gameService.snackmessage();
-      if (msg) {
-        this.snackBar.open(msg, 'ok', { duration: 2000 });
+      if (msg.texte) {
+        this.snackBar.open(msg.texte, 'ok', { duration: 2000 });
       }
-    });  }
+    });
 
-  changerMonde(valeur: string) {
-    if (valeur === '__autre') {
-      this.autreServeur.set(true);
-      return;
-    }
-    this.autreServeur.set(false);
-    void this.gameService.setServer(valeur);
+    this.audio.loop = true;
+    this.audio.volume = 0.4;
+    document.addEventListener('click', () => this.appliquerMusique(), { once: true });
   }
 
-  validerServeur() {
+  private lireMusique(): boolean {
+    try {
+      return localStorage.getItem('music') !== 'off';
+    } catch {
+      return true;
+    }
+  }
+
+  basculerMusique() {
+    this.musique.update((m) => !m);
+    try {
+      localStorage.setItem('music', this.musique() ? 'on' : 'off');
+    } catch {
+      // préférence non mémorisée
+    }
+    this.appliquerMusique();
+  }
+
+  private appliquerMusique() {
+    if (this.musique()) {
+      this.audio.play().catch(() => this.gameService.notify('Music file not found'));
+    } else {
+      this.audio.pause();
+    }
+  }
+
+  changerMonde(url: string) {
+    void this.gameService.setServer(url);
+  }
+
+  async validerMonde() {
     if (!this.urlSaisie.trim()) return;
-    void this.gameService.setServer(this.urlSaisie);
-    this.autreServeur.set(false);
-    this.urlSaisie = '';
+    if (await this.gameService.addWorld(this.urlSaisie)) {
+      this.ajoutMonde.set(false);
+      this.urlSaisie = '';
+    }
+  }
+
+  supprimerMonde() {
+    const courant = this.gameService.worlds().find((w) => w.url === this.gameService.server());
+    if (courant && confirm(`Remove "${courant.name}" from the list?`)) {
+      void this.gameService.removeWorld(courant.url);
+    }
   }
 
   commitName() {
     this.gameService.commitName(this.usernameDraft);
   }
 
+  // Refresh recharge le monde avec le pseudo saisi, même sans avoir appuyé
+  // sur Entrée.
   refresh() {
-    this.gameService.refreshWorld();
+    if (this.usernameDraft.trim() && this.usernameDraft !== this.gameService.user()) {
+      this.gameService.commitName(this.usernameDraft.trim());
+    } else {
+      this.gameService.refreshWorld();
+    }
   }
 
   cibleDe(palier: Palier): string {
