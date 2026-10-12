@@ -58,9 +58,17 @@ export function saveWorldList(liste: WorldServer[]) {
 
 // Adresse du serveur courant. Lue à chaque requête par le lien HTTP d'Apollo,
 // ce qui permet de changer de monde sans recréer le client.
-export const serverUrl = signal(
-  normalizeServerUrl(lire('server') ?? '') || worldList()[0]?.url || DEFAULT_WORLDS[0].url,
-);
+// Une adresse mémorisée qui n'est plus dans la liste (monde supprimé, essai
+// d'ajout interrompu) est abandonnée : le menu déroulant afficherait le premier
+// monde sans qu'on puisse le resélectionner, et le jeu resterait bloqué.
+function initialServer(): string {
+  const memorise = normalizeServerUrl(lire('server') ?? '');
+  const liste = worldList();
+  if (liste.some((w) => w.url === memorise)) return memorise;
+  return liste[0]?.url || DEFAULT_WORLDS[0].url;
+}
+
+export const serverUrl = signal(initialServer());
 
 export function saveServerUrl(url: string) {
   serverUrl.set(url);

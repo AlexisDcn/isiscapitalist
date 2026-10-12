@@ -310,7 +310,10 @@
   }
 } @else {
   <div class="attente">
-    <p>Loading world… (if the server doesn't respond, pick another world)</p>
-    <ng-container *ngTemplateOutlet="choixMonde"></ng-container>
+    <p>Loading world… (if the server doesn't respond, retry or pick another world)</p>
+    <div class="ligne-reglage">
+      <button type="button" class="btn petit" (click)="gameService.refreshWorld()">Retry</button>
+      <ng-container *ngTemplateOutlet="choixMonde"></ng-container>
+    </div>
   </div>
 }
