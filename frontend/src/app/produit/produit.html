@@ -1,43 +1,59 @@
 @if (prod(); as p) {
-  <div class="produit">
+  <article class="biz" [class.locked]="p.quantite === 0">
     <div class="gauche">
-      <div class="lesdeux icon" (click)="startFabrication()">
-        <img class="objet le_premier" [src]="gameService.img(p.logo)" [alt]="p.name" />
-        <div class="quantite le_second">{{ p.quantite }}</div>
+      <div
+        class="icon"
+        role="button"
+        tabindex="0"
+        [attr.aria-label]="'Run ' + p.name"
+        (click)="startFabrication()"
+        (keydown.enter)="startFabrication()"
+      >
+        <img class="objet" [src]="gameService.img(p.logo)" [alt]="p.name" />
+        <span class="qte">{{ p.quantite }}</span>
       </div>
       @if (manager(); as m) {
-        <img
-          class="manager"
-          [src]="gameService.img(m.logo)"
-          [alt]="m.name"
-          [title]="m.name"
-        />
+        <img class="manager" [src]="gameService.img(m.logo)" [alt]="m.name" [title]="m.name" />
       }
     </div>
 
-    <div class="droite">
-      <div class="progressbar">
-        <div class="fill" [class.continu]="continu()" [style.width.%]="progress()"></div>
-        @if (continu()) {
-          <span class="gain"><span [innerHTML]="gainParSeconde() | bigvalue"></span> / s</span>
-        } @else {
-          <span class="gain">+<span [innerHTML]="gainParCycle() | bigvalue"></span></span>
+    <div class="info">
+      <div class="name">{{ p.name }}</div>
+
+      <!-- Jake sert de barre de progression : son corps s'étire, sa tête avance -->
+      <div class="bar">
+        <div class="body" [class.continu]="continu()" [style.width.%]="progress()"></div>
+        <svg class="head" viewBox="0 0 40 40" aria-hidden="true" [style.left.%]="progress()">
+          <use href="#jakehead" />
+        </svg>
+        <div class="earn">
+          @if (continu()) {
+            <span [innerHTML]="gainParSeconde() | bigvalue"></span>&nbsp;/ s
+          } @else {
+            +<span [innerHTML]="gainParCycle() | bigvalue"></span>
+          }
+        </div>
+        @for (pop of pops(); track pop.id) {
+          <span class="pop">+<span [innerHTML]="pop.gain | bigvalue"></span></span>
         }
       </div>
 
-      <div class="achat">
-        <span class="name">{{ p.name }}</span>
-        <button
-          mat-raised-button
-          color="primary"
-          [disabled]="!gameService.canBuy(p)"
-          (click)="acheter()"
-        >
-          {{ qtmulti() }}&nbsp;: {{ gameService.numberToBuy(p) }}
-          (<span [innerHTML]="gameService.coutTotal(p, gameService.numberToBuy(p)) | bigvalue"></span>)
-        </button>
-        <span class="temps">{{ continu() ? 'continuous' : (timeleft() | second) }}</span>
+      <div class="row">
+        <span class="garde" (click)="refuser()">
+          <button
+            type="button"
+            class="btn buy"
+            [disabled]="!gameService.canBuy(p)"
+            (click)="acheter()"
+          >
+            <span>Buy {{ qtmulti() }}: {{ gameService.numberToBuy(p) }}</span>
+            <span
+              [innerHTML]="gameService.coutTotal(p, gameService.numberToBuy(p)) | bigvalue"
+            ></span>
+          </button>
+        </span>
+        <span class="timer">{{ continu() ? 'continuous' : (timeleft() | second) }}</span>
       </div>
     </div>
-  </div>
+  </article>
 }

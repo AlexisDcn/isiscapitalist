@@ -1,34 +1,43 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatButtonModule } from '@angular/material/button';
-import { MatBadgeModule } from '@angular/material/badge';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { BigValuePipe } from './bigvalue-pipe';
 import { GameService } from './game.service';
 import { Palier } from './graphql/schema-types';
 import { Produit } from './produit/produit';
+import { SoundService } from './sound.service';
 
 @Component({
   selector: 'app-root',
-  imports: [
-    MatButtonModule,
-    MatBadgeModule,
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule,
-    NgTemplateOutlet,
-    BigValuePipe,
-    Produit,
-  ],
+  imports: [FormsModule, NgTemplateOutlet, BigValuePipe, Produit],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
 export class App {
   gameService = inject(GameService);
+  sons = inject(SoundService);
   private snackBar = inject(MatSnackBar);
+
+  // Position du commutateur d'achat (0 à 3) : Jake grossit à chaque cran.
+  indexMulti = computed(() =>
+    ['x1', 'x10', 'x100', 'Max'].indexOf(this.gameService.qtmulti()),
+  );
+
+  // Revenu par seconde des produits gérés par un manager, bonus d'anges compris.
+  revenuParSeconde = computed(() => {
+    const w = this.gameService.world();
+    if (!w) return 0;
+    const bonus = 1 + (w.activeangels * w.angelbonus) / 100;
+    return w.products
+      .filter((p) => p.managerUnlocked && p.quantite > 0)
+      .reduce((s, p) => s + (p.revenu * p.quantite * bonus * 1000) / p.vitesse, 0);
+  });
+
+  // Clic sur un achat impossible : Lemongrab n'est pas content.
+  refuserSi(impossible: boolean) {
+    if (impossible) this.sons.jouer('unacceptable');
+  }
 
   usernameDraft = this.gameService.user();
 

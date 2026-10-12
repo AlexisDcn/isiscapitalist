@@ -1,7 +1,24 @@
+<!-- Tête de Jake, réutilisée par les barres de production et le bouton d'achat -->
+<svg width="0" height="0" style="position: absolute" aria-hidden="true">
+  <defs>
+    <symbol id="jakehead" viewBox="0 0 40 40">
+      <ellipse cx="20" cy="21" rx="17" ry="15" fill="#f4a823" stroke="#2b1d14" stroke-width="2.5" />
+      <ellipse cx="9" cy="10" rx="5" ry="4" fill="#c97c0c" stroke="#2b1d14" stroke-width="2" />
+      <ellipse cx="31" cy="10" rx="5" ry="4" fill="#c97c0c" stroke="#2b1d14" stroke-width="2" />
+      <circle cx="14" cy="18" r="5" fill="#fff" stroke="#2b1d14" stroke-width="2" />
+      <circle cx="26" cy="18" r="5" fill="#fff" stroke="#2b1d14" stroke-width="2" />
+      <circle cx="15" cy="18" r="2" fill="#2b1d14" />
+      <circle cx="25" cy="18" r="2" fill="#2b1d14" />
+      <ellipse cx="20" cy="27" rx="8" ry="5" fill="#ffd27a" stroke="#2b1d14" stroke-width="2" />
+      <ellipse cx="20" cy="25" rx="2.6" ry="1.8" fill="#2b1d14" />
+    </symbol>
+  </defs>
+</svg>
+
 <ng-template #choixMonde>
   <div class="choixmonde">
     <select
-      class="mondes"
+      class="champ-saisie"
       aria-label="World"
       [value]="gameService.server()"
       (change)="changerMonde($any($event.target).value)"
@@ -10,236 +27,264 @@
         <option [value]="w.url" [selected]="w.url === gameService.server()">{{ w.name }}</option>
       }
     </select>
-    <button class="petit" type="button" title="Add a world" (click)="ajoutMonde.set(!ajoutMonde())">
+    <button class="btn clair petit" type="button" title="Add a world" (click)="ajoutMonde.set(!ajoutMonde())">
       +
     </button>
-    <button class="petit" type="button" title="Remove this world" (click)="supprimerMonde()">
+    <button class="btn clair petit" type="button" title="Remove this world" (click)="supprimerMonde()">
       &minus;
     </button>
     @if (ajoutMonde()) {
       <input
-        class="urlserveur"
+        class="champ-saisie url"
         type="url"
         placeholder="https://my-server.com"
         aria-label="New world server address"
         [(ngModel)]="urlSaisie"
         (keydown.enter)="validerMonde()"
       />
-      <button class="petit" type="button" (click)="validerMonde()">OK</button>
+      <button class="btn petit" type="button" (click)="validerMonde()">OK</button>
     }
   </div>
 </ng-template>
 
 @if (gameService.world(); as world) {
-  <div class="fond">
-    <div class="header">
-      <div class="worldname">
-        <img class="worldlogo" [src]="gameService.img(world.logo)" [alt]="world.name" />
-        <span>{{ world.name }}</span>
-      </div>
-      <div class="money">
-        @if (!coinKo()) {
-          <img
-            class="coin"
-            src="/gold-coin.png"
-            alt="gold"
-            (error)="coinKo.set(true)"
-          />
-        } @else {
-          <span class="dollar">$</span>
+  <div class="app">
+    <nav class="menu" aria-label="Game menu">
+      <h2>Finn's Pack</h2>
+      <button type="button" (click)="modal.set('unlocks')">Unlocks</button>
+      <button type="button" (click)="modal.set('upgrades')">
+        Cash Upgrades
+        @if (badgeUpgrades() > 0) {
+          <span class="badge">{{ badgeUpgrades() }}</span>
         }
-        <span [innerHTML]="world.money | bigvalue"></span>
-      </div>
-      <div class="multi">
-        <div class="boutons">
-          <button mat-raised-button (click)="gameService.cycleQtMulti()">
-            Buy {{ gameService.qtmulti() }}
-          </button>
-          <button mat-stroked-button class="musique" (click)="basculerMusique()">
-            Music: {{ musique() ? 'on' : 'off' }}
-          </button>
+      </button>
+      <button type="button" (click)="modal.set('angels')">
+        Angel Upgrades
+        @if (badgeAngelUpgrades() > 0) {
+          <span class="badge">{{ badgeAngelUpgrades() }}</span>
+        }
+      </button>
+      <button type="button" (click)="modal.set('managers')">
+        Managers
+        @if (badgeManagers() > 0) {
+          <span class="badge">{{ badgeManagers() }}</span>
+        }
+      </button>
+      <button type="button" (click)="ouvrirInvestors()">
+        <span class="double">Prismo's Wishes<small>Angel investors</small></span>
+      </button>
+    </nav>
+
+    <main class="main">
+      <section class="top">
+        <div class="monde">
+          <img class="worldlogo" [src]="gameService.img(world.logo)" [alt]="world.name" />
+          <h1>{{ world.name }}</h1>
         </div>
-        <ng-container *ngTemplateOutlet="choixMonde"></ng-container>
-      </div>
-      <div class="userid">
-        <mat-form-field appearance="outline">
-          <mat-label>Your ID</mat-label>
-          <input matInput [(ngModel)]="usernameDraft" (keydown.enter)="commitName()" />
-        </mat-form-field>
-        <button mat-stroked-button (click)="refresh()">Refresh</button>
-      </div>
-    </div>
 
-    <div class="main">
-      <div class="menu">
-        <button mat-raised-button color="primary" (click)="modal.set('unlocks')">Unlocks</button>
-        <button
-          mat-raised-button
-          color="primary"
-          [matBadge]="badgeUpgrades()"
-          [matBadgeHidden]="badgeUpgrades() === 0"
-          (click)="modal.set('upgrades')"
-        >
-          Cash Upgrades
-        </button>
-        <button
-          mat-raised-button
-          color="primary"
-          [matBadge]="badgeAngelUpgrades()"
-          [matBadgeHidden]="badgeAngelUpgrades() === 0"
-          (click)="modal.set('angels')"
-        >
-          Angel Upgrades
-        </button>
-        <button
-          mat-raised-button
-          color="primary"
-          [matBadge]="badgeManagers()"
-          [matBadgeHidden]="badgeManagers() === 0"
-          (click)="modal.set('managers')"
-        >
-          Managers
-        </button>
-        <button mat-raised-button color="primary" (click)="ouvrirInvestors()">
-          Investors
-        </button>
-      </div>
+        <div class="cash">
+          <small>Treasure</small>
+          <b>
+            @if (!coinKo()) {
+              <img class="coin" src="/gold-coin.png" alt="gold" (error)="coinKo.set(true)" />
+            } @else {
+              $
+            }
+            <span [innerHTML]="world.money | bigvalue"></span>
+          </b>
+          <span class="rate"><span [innerHTML]="revenuParSeconde() | bigvalue"></span> / sec (managed)</span>
+        </div>
 
-      <div class="products">
+        <!-- Jake grossit à chaque changement de quantité d'achat -->
+        <button
+          type="button"
+          class="btn mult"
+          aria-label="Change buy amount"
+          [style.padding-inline.px]="12 + 6 * indexMulti()"
+          (click)="gameService.cycleQtMulti()"
+        >
+          <svg
+            viewBox="0 0 40 40"
+            aria-hidden="true"
+            [style.width.px]="26 + 8 * indexMulti()"
+            [style.height.px]="26 + 8 * indexMulti()"
+          >
+            <use href="#jakehead" />
+          </svg>
+          {{ gameService.qtmulti() === 'Max' ? 'MAX' : gameService.qtmulti() }}
+        </button>
+
+        <div class="reglages">
+          <ng-container *ngTemplateOutlet="choixMonde"></ng-container>
+          <div class="ligne-reglage">
+            <label class="champ">
+              <span>Your ID</span>
+              <input
+                class="champ-saisie"
+                [(ngModel)]="usernameDraft"
+                (keydown.enter)="commitName()"
+              />
+            </label>
+            <button type="button" class="btn clair petit" (click)="refresh()">Refresh</button>
+          </div>
+          <div class="ligne-reglage">
+            <button type="button" class="btn clair petit" (click)="basculerMusique()">
+              Music: {{ musique() ? 'on' : 'off' }}
+            </button>
+            <button type="button" class="btn clair petit" (click)="sons.basculer()">
+              Sounds: {{ sons.actif() ? 'on' : 'off' }}
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid">
         @for (p of world.products; track p.id) {
           <app-produit [prod]="p" [qtmulti]="gameService.qtmulti()"></app-produit>
         }
-      </div>
-    </div>
+      </section>
+    </main>
+  </div>
 
-    @if (modal() === 'managers') {
-      <div class="modal">
-        <div class="modal-head">
-          <h1 class="title">Managers make you feel better !</h1>
-          <button mat-raised-button color="primary" (click)="modal.set(null)">Close</button>
-        </div>
+  @if (modal() === 'managers') {
+    <div class="modal">
+      <div class="modal-head">
+        <h2>Managers make you feel better!</h2>
+        <button type="button" class="btn clair" (click)="modal.set(null)">Close</button>
+      </div>
+      <div class="posters">
         @for (manager of world.managers; track manager.name) {
           @if (!manager.unlocked) {
-            <div class="ligne">
+            <div class="poster">
+              <span class="wanted">Wanted</span>
               <img class="objet" [src]="gameService.img(manager.logo)" [alt]="manager.name" />
-              <div class="infos">
-                <div class="nom">{{ manager.name }}</div>
-                <div class="cible">{{ cibleDe(manager) }}</div>
-                <div class="cout"><span [innerHTML]="manager.seuil | bigvalue"></span> $</div>
-              </div>
-              <button
-                mat-raised-button
-                color="accent"
-                [disabled]="world.money < manager.seuil"
-                (click)="gameService.hireManager(manager)"
-              >
-                Hire !
-              </button>
+              <div class="nom">{{ manager.name }}</div>
+              <div class="cible">runs {{ cibleDe(manager) }}</div>
+              <div class="cout"><span [innerHTML]="manager.seuil | bigvalue"></span> $</div>
+              <span class="garde" (click)="refuserSi(world.money < manager.seuil)">
+                <button
+                  type="button"
+                  class="btn"
+                  [disabled]="world.money < manager.seuil"
+                  (click)="gameService.hireManager(manager)"
+                >
+                  Hire!
+                </button>
+              </span>
             </div>
           }
         }
       </div>
-    }
+    </div>
+  }
 
-    @if (modal() === 'unlocks') {
-      <div class="modal">
-        <div class="modal-head">
-          <h1 class="title">Want to maximize profits ? Get your investments to these quotas !</h1>
-          <button mat-raised-button color="primary" (click)="modal.set(null)">Close</button>
-        </div>
-        @for (unlock of nextUnlocks(); track unlock.name) {
-          <div class="ligne">
-            <img class="objet" [src]="gameService.img(unlock.logo)" [alt]="unlock.name" />
-            <div class="infos">
-              <div class="nom">{{ unlock.name }}</div>
-              <div class="seuil">{{ unlock.seuil }}</div>
-              <div class="cible">{{ cibleDe(unlock) }} {{ bonusDe(unlock) }}</div>
-            </div>
-          </div>
-        } @empty {
-          <p>All milestones are unlocked!</p>
-        }
+  @if (modal() === 'unlocks') {
+    <div class="modal">
+      <div class="modal-head">
+        <h2>Get your investments to these quotas!</h2>
+        <button type="button" class="btn clair" (click)="modal.set(null)">Close</button>
       </div>
-    }
-
-    @if (modal() === 'upgrades') {
-      <div class="modal">
-        <div class="modal-head">
-          <h1 class="title">Boost your investments !</h1>
-          <button mat-raised-button color="primary" (click)="modal.set(null)">Close</button>
+      @for (unlock of nextUnlocks(); track unlock.name) {
+        <div class="ligne">
+          <img class="objet" [src]="gameService.img(unlock.logo)" [alt]="unlock.name" />
+          <div class="infos">
+            <div class="nom">{{ unlock.name }}</div>
+            <div class="seuil">{{ unlock.seuil }}</div>
+            <div class="cible">{{ cibleDe(unlock) }} {{ bonusDe(unlock) }}</div>
+          </div>
         </div>
-        @for (upgrade of world.upgrades; track upgrade.name) {
-          @if (!upgrade.unlocked) {
-            <div class="ligne">
-              <img class="objet" [src]="gameService.img(upgrade.logo)" [alt]="upgrade.name" />
-              <div class="infos">
-                <div class="nom">{{ upgrade.name }}</div>
-                <div class="cout"><span [innerHTML]="upgrade.seuil | bigvalue"></span> $</div>
-                <div class="cible">{{ cibleDe(upgrade) }} {{ bonusDe(upgrade) }}</div>
-              </div>
+      } @empty {
+        <p>All milestones are unlocked!</p>
+      }
+    </div>
+  }
+
+  @if (modal() === 'upgrades') {
+    <div class="modal">
+      <div class="modal-head">
+        <h2>Boost your investments!</h2>
+        <button type="button" class="btn clair" (click)="modal.set(null)">Close</button>
+      </div>
+      @for (upgrade of world.upgrades; track upgrade.name) {
+        @if (!upgrade.unlocked) {
+          <div class="ligne">
+            <img class="objet" [src]="gameService.img(upgrade.logo)" [alt]="upgrade.name" />
+            <div class="infos">
+              <div class="nom">{{ upgrade.name }}</div>
+              <div class="cout"><span [innerHTML]="upgrade.seuil | bigvalue"></span> $</div>
+              <div class="cible">{{ cibleDe(upgrade) }} {{ bonusDe(upgrade) }}</div>
+            </div>
+            <span class="garde" (click)="refuserSi(world.money < upgrade.seuil)">
               <button
-                mat-raised-button
-                color="accent"
+                type="button"
+                class="btn"
                 [disabled]="world.money < upgrade.seuil"
                 (click)="gameService.buyCashUpgrade(upgrade)"
               >
-                Buy !
+                Buy!
               </button>
-            </div>
-          }
+            </span>
+          </div>
         }
-      </div>
-    }
+      }
+    </div>
+  }
 
-    @if (modal() === 'angels') {
-      <div class="modal">
-        <div class="modal-head">
-          <h1 class="title">Spend your Angels Wisely !</h1>
-          <button mat-raised-button color="primary" (click)="modal.set(null)">Close</button>
-        </div>
-        <p>{{ world.activeangels }} angels available</p>
-        @for (upgrade of world.angelupgrades; track upgrade.name) {
-          @if (!upgrade.unlocked) {
-            <div class="ligne">
-              <img class="objet" [src]="gameService.img(upgrade.logo)" [alt]="upgrade.name" />
-              <div class="infos">
-                <div class="nom">{{ upgrade.name }}</div>
-                <div class="cout"><span [innerHTML]="upgrade.seuil | bigvalue"></span> angels</div>
-                <div class="cible">{{ cibleDe(upgrade) }} {{ bonusDe(upgrade) }}</div>
-              </div>
+  @if (modal() === 'angels') {
+    <div class="modal">
+      <div class="modal-head">
+        <h2>Spend your angels wisely!</h2>
+        <button type="button" class="btn clair" (click)="modal.set(null)">Close</button>
+      </div>
+      <p class="info-anges">{{ world.activeangels }} active angels available</p>
+      @for (upgrade of world.angelupgrades; track upgrade.name) {
+        @if (!upgrade.unlocked) {
+          <div class="ligne">
+            <img class="objet" [src]="gameService.img(upgrade.logo)" [alt]="upgrade.name" />
+            <div class="infos">
+              <div class="nom">{{ upgrade.name }}</div>
+              <div class="cout"><span [innerHTML]="upgrade.seuil | bigvalue"></span> angels</div>
+              <div class="cible">{{ cibleDe(upgrade) }} {{ bonusDe(upgrade) }}</div>
+            </div>
+            <span class="garde" (click)="refuserSi(world.activeangels < upgrade.seuil)">
               <button
-                mat-raised-button
-                color="accent"
+                type="button"
+                class="btn rose"
                 [disabled]="world.activeangels < upgrade.seuil"
                 (click)="gameService.buyAngelUpgrade(upgrade)"
               >
-                Buy !
+                Buy!
               </button>
-            </div>
-          }
-        }
-      </div>
-    }
-
-    @if (modal() === 'investors') {
-      <div class="modal">
-        <div class="modal-head">
-          <h1 class="title">Angel Investors</h1>
-          <button mat-raised-button color="primary" (click)="modal.set(null)">Close</button>
-        </div>
-        <div class="investors">
-          <div>
-            <p>{{ angesObtenus() }} Total Angels</p>
-            <p>{{ world.activeangels }} Active Angels</p>
-            <p>{{ world.angelbonus }}% Bonus Per Angel</p>
+            </span>
           </div>
-          <button mat-raised-button color="accent" class="reset" (click)="reset()">
-            {{ angesAReclamer() }} angels<br />To Claim with Restart
-          </button>
-        </div>
+        }
+      }
+    </div>
+  }
+
+  @if (modal() === 'investors') {
+    <div class="modal">
+      <div class="modal-head">
+        <h2>Prismo's Wishes</h2>
+        <button type="button" class="btn clair" (click)="modal.set(null)">Close</button>
       </div>
-    }
-  </div>
+      <p class="intro">
+        Angel investors: wish for a fresh start. Your world is reset, and every angel you have
+        earned becomes active, each one adding {{ world.angelbonus }}% to all your profits.
+      </p>
+      <div class="investors">
+        <div class="compteurs">
+          <p><b>{{ angesObtenus() }}</b> Total Angels</p>
+          <p><b>{{ world.activeangels }}</b> Active Angels</p>
+          <p><b>{{ world.angelbonus }}%</b> Bonus Per Angel</p>
+        </div>
+        <button type="button" class="btn rose reset" (click)="reset()">
+          Make a wish (reset)<br />
+          <span class="gros">+{{ angesAReclamer() }} angels</span>
+        </button>
+      </div>
+    </div>
+  }
 } @else {
   <div class="attente">
     <p>Loading world… (if the server doesn't respond, pick another world)</p>

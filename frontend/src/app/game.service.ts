@@ -1,4 +1,5 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
+import { SoundService } from './sound.service';
 import { Apollo, TypedDocumentNode } from 'apollo-angular';
 import { firstValueFrom } from 'rxjs';
 import {
@@ -61,6 +62,8 @@ export class GameService {
   // produits s'en servent pour abandonner leurs productions en cours, qui
   // ne correspondent plus à l'état serveur (reset, changement de joueur).
   readonly worldVersion = signal(0);
+
+  private sons = inject(SoundService);
 
   constructor(private apollo: Apollo) {
     this.refreshWorld();
@@ -394,6 +397,10 @@ export class GameService {
     });
 
     this.notify(`${palier.name} unlocked!`);
+    // BMO bipe quand un palier de quantité (unlock) se débloque
+    if (source.kind === 'productPalier' || source.kind === 'allunlock') {
+      this.sons.jouer('bmo');
+    }
   }
 
   private async mutate<TData, TVariables extends object>(

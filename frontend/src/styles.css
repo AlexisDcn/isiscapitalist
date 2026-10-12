@@ -1,14 +1,112 @@
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
 
-/* You can add global styles to this file, and also import other style files */
+/* Palette "Land of Ooo" : ciel et herbe en fond, contours brun foncé épais,
+   bleu Finn pour le menu, orange Jake pour les actions, rose Bubblegum pour
+   les mises en avant. Polices Google : Chewy (titres), Grandstander (texte). */
+:root {
+  --sky: #8fd3f4;
+  --grass: #7ccb4a;
+  --grass-dark: #4f9a2c;
+  --jake: #f4a823;
+  --jake-dark: #c97c0c;
+  --jake-light: #ffd27a;
+  --finn: #2f8fe0;
+  --bubblegum: #ff8cc6;
+  --bubblegum-dark: #d9559b;
+  --ink: #2b1d14;
+  --paper: #fff8e6;
+  --paper-edge: #e9d8ad;
+  --display: 'Chewy', 'Comic Sans MS', cursive;
+  --body: 'Grandstander', 'Trebuchet MS', system-ui, sans-serif;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 html,
 body {
   height: 100%;
 }
+
 body {
   margin: 0;
-  background: #fafafa;
-  color: #212121;
-  color-scheme: light;
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  background: linear-gradient(
+      180deg,
+      var(--sky) 0%,
+      var(--sky) 55%,
+      var(--grass) 55%,
+      var(--grass-dark) 100%
+    )
+    fixed;
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 15px;
+}
+
+/* Boutons du jeu : contour épais, ombre portée "posée", écrasement au clic */
+.btn {
+  font-family: var(--body);
+  font-weight: 800;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--jake);
+  border: 3px solid var(--ink);
+  border-radius: 14px;
+  padding: 6px 12px;
+  box-shadow: 0 3px 0 var(--ink);
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.3, 1.8, 0.5, 1);
+}
+
+.btn:active:not([disabled]) {
+  transform: translateY(2px) scaleY(0.9) scaleX(1.06);
+  box-shadow: 0 1px 0 var(--ink);
+}
+
+.btn.clair {
+  background: var(--paper);
+}
+
+.btn.rose {
+  background: var(--bubblegum);
+}
+
+.btn[disabled] {
+  background: #cfcfcf;
+  color: #6d6258;
+  cursor: not-allowed;
+  /* le clic traverse le bouton désactivé jusqu'à la zone .garde qui
+     l'entoure : elle joue le "UNACCEPTABLE!" de Lemongrab */
+  pointer-events: none;
+}
+
+.garde {
+  display: inline-flex;
+  cursor: not-allowed;
+}
+
+.garde:has(.btn:not([disabled])) {
+  cursor: auto;
+}
+
+/* Badge "action possible" (rose Bubblegum) */
+.badge {
+  margin-left: auto;
+  min-width: 22px;
+  text-align: center;
+  background: var(--bubblegum);
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 0 7px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
 }

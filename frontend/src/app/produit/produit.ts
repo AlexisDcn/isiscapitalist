@@ -8,20 +8,25 @@ import {
   signal,
   untracked,
 } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
 import { BigValuePipe } from '../bigvalue-pipe';
 import { SecondPipe } from '../second-pipe';
 import { GameService } from '../game.service';
+import { SoundService } from '../sound.service';
 import { Product } from '../graphql/schema-types';
 
 @Component({
   selector: 'app-produit',
-  imports: [MatButtonModule, BigValuePipe, SecondPipe],
+  imports: [BigValuePipe, SecondPipe],
   templateUrl: './produit.html',
   styleUrl: './produit.css',
 })
 export class Produit implements OnDestroy {
   gameService = inject(GameService);
+  sons = inject(SoundService);
+
+  // Gains qui s'envolent au-dessus de la barre à la fin d'une production.
+  pops = signal<{ id: number; gain: number }[]>([]);
+  private popId = 0;
 
   prod = input<Product | undefined>();
   qtmulti = input<string>('x1');
@@ -138,6 +143,8 @@ export class Produit implements OnDestroy {
         if (cycles >= 1) {
           this.gameService.productionDone(p, cycles);
           this.starttime += cycles * p.vitesse;
+          // en mode continu les gains arrivent trop vite pour être affichés un à un
+          if (!this.continu()) this.afficherGain(this.gainParCycle() * cycles);
         }
         const reste = currentTime - this.starttime;
         this.progress.set(
@@ -156,6 +163,7 @@ export class Produit implements OnDestroy {
 
       // La barre reste affichée pleine pendant une frame avant de repartir.
       this.gameService.productionDone(p, 1);
+      this.afficherGain(this.gainParCycle());
       requestAnimationFrame(() => {
         if (gen !== this.generation) return;
         this.progress.set(0);
@@ -163,6 +171,18 @@ export class Produit implements OnDestroy {
       });
     };
     requestAnimationFrame(animate);
+  }
+
+  private afficherGain(gain: number) {
+    const id = ++this.popId;
+    this.pops.update((l) => [...l, { id, gain }]);
+    setTimeout(() => this.pops.update((l) => l.filter((x) => x.id !== id)), 900);
+  }
+
+  // Clic sur un bouton d'achat désactivé (pas assez d'argent)
+  refuser() {
+    const p = this.prod();
+    if (p && !this.gameService.canBuy(p)) this.sons.jouer('unacceptable');
   }
 
   acheter() {
