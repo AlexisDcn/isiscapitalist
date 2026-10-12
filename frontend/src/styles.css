@@ -7,9 +7,10 @@
   --sky: #8fd3f4;
   --grass: #7ccb4a;
   --grass-dark: #4f9a2c;
-  --jake: #f4a823;
-  --jake-dark: #c97c0c;
-  --jake-light: #ffd27a;
+  /* jaune doré de Jake (relevé sur son modèle) */
+  --jake: #fdb827;
+  --jake-dark: #d99a14;
+  --jake-light: #ffd977;
   --finn: #2f8fe0;
   --bubblegum: #ff8cc6;
   --bubblegum-dark: #d9559b;

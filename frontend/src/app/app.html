@@ -1,16 +1,36 @@
 <!-- Tête de Jake, réutilisée par les barres de production et le bouton d'achat -->
 <svg width="0" height="0" style="position: absolute" aria-hidden="true">
   <defs>
-    <symbol id="jakehead" viewBox="0 0 40 40">
-      <ellipse cx="20" cy="21" rx="17" ry="15" fill="#f4a823" stroke="#2b1d14" stroke-width="2.5" />
-      <ellipse cx="9" cy="10" rx="5" ry="4" fill="#c97c0c" stroke="#2b1d14" stroke-width="2" />
-      <ellipse cx="31" cy="10" rx="5" ry="4" fill="#c97c0c" stroke="#2b1d14" stroke-width="2" />
-      <circle cx="14" cy="18" r="5" fill="#fff" stroke="#2b1d14" stroke-width="2" />
-      <circle cx="26" cy="18" r="5" fill="#fff" stroke="#2b1d14" stroke-width="2" />
-      <circle cx="15" cy="18" r="2" fill="#2b1d14" />
-      <circle cx="25" cy="18" r="2" fill="#2b1d14" />
-      <ellipse cx="20" cy="27" rx="8" ry="5" fill="#ffd27a" stroke="#2b1d14" stroke-width="2" />
-      <ellipse cx="20" cy="25" rx="2.6" ry="1.8" fill="#2b1d14" />
+    <!-- d'après le modèle de Jake : jaune doré cerné de noir, grands yeux
+         blancs en "C" sans pupille, museau à deux bajoues, truffe ovale noire,
+         oreille tombante tracée d'un simple trait -->
+    <symbol id="jakehead" viewBox="0 0 60 50">
+      <!-- tête -->
+      <path
+        d="M6 30 C4 15 14 4 29 4 C43 4 52 12 53 24 L53 38 C53 44 47 47 40 47 L16 47 C9 47 6 42 6 30 Z"
+        fill="#fdb827"
+        stroke="#000"
+        stroke-width="2.4"
+        stroke-linejoin="round"
+      />
+      <!-- oreille gauche -->
+      <path d="M9 27 L9.4 32 Q10.5 35 13 34.6 Q15 34 15.2 31 L15.4 26.5" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" />
+      <!-- yeux : un disque noir décalé vers la gauche donne le "C" épais -->
+      <circle cx="20.4" cy="20" r="9.6" fill="#000" />
+      <circle cx="22.4" cy="20" r="8" fill="#fff" stroke="#000" stroke-width="1.4" />
+      <circle cx="44.6" cy="18.5" r="9.6" fill="#000" />
+      <circle cx="46.6" cy="18.5" r="8" fill="#fff" stroke="#000" stroke-width="1.4" />
+      <!-- museau à deux bajoues -->
+      <path
+        d="M24 33 C23.5 25 28 21.5 33.5 21.5 C39 21.5 43.5 25 43 33 C42.8 38 40.6 40.5 38.2 40.5 C36 40.5 34.6 38.8 33.5 37 C32.4 38.8 31 40.5 28.8 40.5 C26.4 40.5 24.2 38 24 33 Z"
+        fill="#fdb827"
+        stroke="#000"
+        stroke-width="2"
+        stroke-linejoin="round"
+      />
+      <!-- truffe et bouche -->
+      <ellipse cx="33.5" cy="26.4" rx="4.6" ry="2.9" fill="#000" />
+      <path d="M31.2 29.2 L31 33.4 M35.8 29.2 L36 33.4 M31 33.4 Q33.5 34.6 36 33.4" fill="none" stroke="#000" stroke-width="1.4" stroke-linecap="round" />
     </symbol>
   </defs>
 </svg>
@@ -104,9 +124,9 @@
           (click)="gameService.cycleQtMulti()"
         >
           <svg
-            viewBox="0 0 40 40"
+            viewBox="0 0 60 50"
             aria-hidden="true"
-            [style.width.px]="26 + 8 * indexMulti()"
+            [style.width.px]="31 + 10 * indexMulti()"
             [style.height.px]="26 + 8 * indexMulti()"
           >
             <use href="#jakehead" />

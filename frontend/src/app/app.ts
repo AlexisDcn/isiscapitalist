@@ -139,7 +139,8 @@ export class App {
 
   private appliquerMusique() {
     if (this.musique()) {
-      this.audio.play().catch(() => this.gameService.notify('Music file not found'));
+      // fichier absent ou lecture refusée : on reste silencieux
+      this.audio.play().catch(() => undefined);
     } else {
       this.audio.pause();
     }
