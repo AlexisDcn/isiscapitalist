@@ -112,13 +112,13 @@ describe('AppService', () => {
     it("lève une erreur si le produit n'existe pas", () => {
       const world = makeWorld();
       expect(() => service.achatProduit(world, 999, 1)).toThrow(
-        "Le produit avec l'id 999 n'existe pas",
+        'Product with id 999 does not exist',
       );
     });
 
     it("lève une erreur si l'argent est insuffisant et ne modifie rien", () => {
       const world = makeWorld({ money: 5 });
-      expect(() => service.achatProduit(world, 1, 1)).toThrow(/insuffisant/);
+      expect(() => service.achatProduit(world, 1, 1)).toThrow(/Not enough/);
       expect(world.money).toBe(5);
       expect(world.products[0].quantite).toBe(0);
     });
@@ -172,7 +172,7 @@ describe('AppService', () => {
     it("lève une erreur si le produit n'existe pas", () => {
       const world = makeWorld();
       expect(() => service.lancerProduction(world, 999)).toThrow(
-        "n'existe pas",
+        'does not exist',
       );
     });
   });
@@ -190,7 +190,7 @@ describe('AppService', () => {
     it('lève une erreur si les fonds sont insuffisants', () => {
       const world = makeWorld({ money: 10 });
       expect(() => service.engagerManager(world, 'Manager A')).toThrow(
-        /insuffisant/,
+        /Not enough/,
       );
       expect(world.managers[0].unlocked).toBe(false);
     });
@@ -199,14 +199,14 @@ describe('AppService', () => {
       const world = makeWorld({ money: 1000 });
       service.engagerManager(world, 'Manager A');
       expect(() => service.engagerManager(world, 'Manager A')).toThrow(
-        /déjà engagé/,
+        /already hired/,
       );
     });
 
     it('lève une erreur si le nom est inconnu', () => {
       const world = makeWorld({ money: 1000 });
       expect(() => service.engagerManager(world, 'Inconnu')).toThrow(
-        "n'existe pas",
+        'does not exist',
       );
     });
   });
@@ -226,7 +226,7 @@ describe('AppService', () => {
       const world = makeWorld({ money: 10 });
       expect(() =>
         service.acheterCashUpgrade(world, 'Upgrade Cash'),
-      ).toThrow(/insuffisant/);
+      ).toThrow(/Not enough/);
     });
 
     it('lève une erreur si déjà débloqué', () => {
@@ -234,7 +234,7 @@ describe('AppService', () => {
       service.acheterCashUpgrade(world, 'Upgrade Cash');
       expect(() =>
         service.acheterCashUpgrade(world, 'Upgrade Cash'),
-      ).toThrow(/déjà débloquée/);
+      ).toThrow(/already unlocked/);
     });
   });
 
@@ -270,7 +270,7 @@ describe('AppService', () => {
       const world = makeWorld({ activeangels: 1 });
       expect(() =>
         service.acheterAngelUpgrade(world, 'Upgrade Angel'),
-      ).toThrow(/insuffisant/);
+      ).toThrow(/Not enough/);
     });
   });
 

@@ -2,20 +2,20 @@
   <div class="choixmonde">
     <select
       class="mondes"
-      aria-label="Monde"
+      aria-label="World"
       [value]="gameService.server()"
       (change)="changerMonde($any($event.target).value)"
     >
       @for (w of gameService.worlds(); track w.url) {
         <option [value]="w.url" [selected]="w.url === gameService.server()">{{ w.name }}</option>
       }
-      <option value="__autre">Autre serveur…</option>
+      <option value="__autre">Other server…</option>
     </select>
     @if (autreServeur()) {
       <input
         class="urlserveur"
         type="url"
-        placeholder="https://mon-serveur.fr"
+        placeholder="https://my-server.com"
         [(ngModel)]="urlSaisie"
         (keydown.enter)="validerServeur()"
       />
@@ -25,18 +25,18 @@
 </ng-template>
 
 @if (gameService.world(); as world) {
-  <div
-    class="fond"
-    [style.background-image]="'url(' + gameService.img(world.logo) + ')'"
-  >
+  <div class="fond">
     <div class="header">
-      <div class="worldname">{{ world.name }}</div>
+      <div class="worldname">
+        <img class="worldlogo" [src]="gameService.img(world.logo)" [alt]="world.name" />
+        <span>{{ world.name }}</span>
+      </div>
       <div class="money">
         @if (!coinKo()) {
           <img
             class="coin"
-            [src]="gameService.img('/icones/gold-coin.png')"
-            alt="or"
+            src="/gold-coin.png"
+            alt="gold"
             (error)="coinKo.set(true)"
           />
         } @else {
@@ -146,7 +146,7 @@
             </div>
           </div>
         } @empty {
-          <p>Tous les paliers sont débloqués !</p>
+          <p>All milestones are unlocked!</p>
         }
       </div>
     }
@@ -231,7 +231,7 @@
   </div>
 } @else {
   <div class="attente">
-    <p>Chargement du monde… (si le serveur ne répond pas, choisissez un autre monde)</p>
+    <p>Loading world… (if the server doesn't respond, pick another world)</p>
     <ng-container *ngTemplateOutlet="choixMonde"></ng-container>
   </div>
 }

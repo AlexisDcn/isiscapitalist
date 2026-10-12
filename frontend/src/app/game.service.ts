@@ -124,12 +124,12 @@ export class GameService {
           fetchPolicy: 'no-cache',
         }),
       );
-      if (!data?.getWorld) throw new Error('Réponse vide du serveur');
+      if (!data?.getWorld) throw new Error('Empty response from the server');
       this.world.set(data.getWorld as World);
       if (!douce) this.worldVersion.update((v) => v + 1);
     } catch {
       this.snackmessage.set(
-        'Erreur de communication avec le serveur pour charger le monde',
+        'Could not load the world from the server',
       );
     } finally {
       this.refreshEnCours = false;
@@ -241,7 +241,7 @@ export class GameService {
       managers: newmanagers,
       money: world.money - manager.seuil,
     });
-    this.snackmessage.set(`${manager.name} a rejoint votre équipe !`);
+    this.snackmessage.set(`${manager.name} joined your team!`);
 
     await this.mutate(EngagerManagerDocument, {
       user: this.user(),
@@ -356,7 +356,7 @@ export class GameService {
         source.kind === 'angelupgrade' ? marquerDebloque(world.angelupgrades) : world.angelupgrades,
     });
 
-    this.snackmessage.set(`${palier.name} débloqué !`);
+    this.snackmessage.set(`${palier.name} unlocked!`);
   }
 
   private async mutate<TData, TVariables extends object>(
@@ -373,7 +373,7 @@ export class GameService {
       // Pas de getWorld ici : en dehors du chargement, du bouton Refresh, du
       // reset et du total d'anges (Investors), le client ne recharge pas le
       // monde complet. Le serveur reprend la main au prochain Refresh.
-      this.snackmessage.set('Action refusée par le serveur');
+      this.snackmessage.set('Action rejected by the server');
     }
   }
 }

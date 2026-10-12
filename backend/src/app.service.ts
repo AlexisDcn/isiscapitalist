@@ -26,7 +26,7 @@ export class AppService {
 
     if (world.money < coutTotal) {
       throw new Error(
-        `Argent insuffisant pour acheter ${quantite} ${product.name} (coût ${coutTotal}, argent disponible ${world.money})`,
+        `Not enough money to buy ${quantite} ${product.name} (cost ${coutTotal}, available ${world.money})`,
       );
     }
 
@@ -50,11 +50,11 @@ export class AppService {
     const manager = this.findManager(world, name);
 
     if (manager.unlocked) {
-      throw new Error(`Le manager ${name} est déjà engagé`);
+      throw new Error(`Manager ${name} is already hired`);
     }
     if (world.money < manager.seuil) {
       throw new Error(
-        `Argent insuffisant pour engager ${name} (coût ${manager.seuil}, argent disponible ${world.money})`,
+        `Not enough money to hire ${name} (cost ${manager.seuil}, available ${world.money})`,
       );
     }
 
@@ -85,12 +85,12 @@ export class AppService {
     const upgrade = this.findUpgrade(upgrades, name);
 
     if (upgrade.unlocked) {
-      throw new Error(`L'amélioration ${name} est déjà débloquée`);
+      throw new Error(`Upgrade ${name} is already unlocked`);
     }
     if (world[monnaie] < upgrade.seuil) {
-      const nomMonnaie = monnaie === 'money' ? 'Argent' : 'Anges';
+      const nomMonnaie = monnaie === 'money' ? 'money' : 'angels';
       throw new Error(
-        `${nomMonnaie} insuffisant pour débloquer ${name} (coût ${upgrade.seuil}, disponible ${world[monnaie]})`,
+        `Not enough ${nomMonnaie} to unlock ${name} (cost ${upgrade.seuil}, available ${world[monnaie]})`,
       );
     }
 
@@ -104,7 +104,7 @@ export class AppService {
   private findUpgrade(upgrades: Palier[], name: string): Palier {
     const upgrade = upgrades.find((u) => u.name === name);
     if (!upgrade) {
-      throw new Error(`L'amélioration ${name} n'existe pas`);
+      throw new Error(`Upgrade ${name} does not exist`);
     }
     return upgrade;
   }
@@ -155,7 +155,7 @@ export class AppService {
   private findProduct(world: World, id: number): Product {
     const product = world.products.find((p) => p.id === id);
     if (!product) {
-      throw new Error(`Le produit avec l'id ${id} n'existe pas`);
+      throw new Error(`Product with id ${id} does not exist`);
     }
     return product;
   }
@@ -163,7 +163,7 @@ export class AppService {
   private findManager(world: World, name: string): Palier {
     const manager = world.managers.find((m) => m.name === name);
     if (!manager) {
-      throw new Error(`Le manager ${name} n'existe pas`);
+      throw new Error(`Manager ${name} does not exist`);
     }
     return manager;
   }
@@ -294,7 +294,7 @@ export class AppService {
       );
     } catch (err) {
       console.error(err);
-      throw new Error(`Erreur d'écriture du monde coté serveur`);
+      throw new Error(`Could not save the world on the server`);
     }
   }
 }

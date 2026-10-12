@@ -1,5 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -84,8 +84,8 @@ export class App {
     return w ? w.activeangels + this.angesDepenses() : 0;
   });
 
-  // La pièce d'or est une image de notre jeu : un monde distant ne la fournit
-  // pas, on affiche alors simplement un "$".
+  // La pièce d'or est une image du client (frontend/public) : elle s'affiche
+  // quel que soit le monde ; si le fichier manque, on affiche un "$".
   coinKo = signal(false);
 
   autreServeur = signal(false);
@@ -97,14 +97,7 @@ export class App {
       if (msg) {
         this.snackBar.open(msg, 'ok', { duration: 2000 });
       }
-    });
-
-    // nouveau monde : on retente la pièce d'or
-    effect(() => {
-      this.gameService.server();
-      untracked(() => this.coinKo.set(false));
-    });
-  }
+    });  }
 
   changerMonde(valeur: string) {
     if (valeur === '__autre') {

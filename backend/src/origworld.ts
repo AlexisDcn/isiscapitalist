@@ -1,10 +1,9 @@
 import { RatioType } from './graphql.js';
 
-// Le monde d'origine sur le thème d'Adventure Time. Les 6 produits représentent
-// des objets emblématiques de la saga, classés dans l'ordre chronologique de
-// l'histoire (de la découverte de la couronne par Simon avant la Grande Guerre
-// des Champignons jusqu'à l'épée dorée de Finn dans les arcs les plus tardifs).
-// Chaque produit est associé à un manager qui est le personnage lié à cet objet.
+// The original Adventure Time world. Its 6 products are iconic objects of
+// the series, ordered by the chronology of the story (from Simon finding the
+// crown before the Great Mushroom War to Finn's golden sword in the latest
+// arcs). Each product is run by the character linked to that object.
 export const origworld = {
   name: 'The Land of Ooo',
   logo: '/icones/ooo-map.png',
@@ -28,7 +27,7 @@ export const origworld = {
       managerUnlocked: false,
       paliers: [
         {
-          name: 'Simon met la couronne pour la première fois',
+          name: "Simon puts on the crown for the first time",
           logo: '/icones/ice-king-crown.png',
           seuil: 20,
           idcible: 1,
@@ -37,7 +36,7 @@ export const origworld = {
           unlocked: false,
         },
         {
-          name: 'La folie glaciale commence à opérer',
+          name: "The icy madness sets in",
           logo: '/icones/ice-king-crown.png',
           seuil: 75,
           idcible: 1,
@@ -46,7 +45,7 @@ export const origworld = {
           unlocked: false,
         },
         {
-          name: 'Simon devient le Roi des Glaces',
+          name: "Simon becomes the Ice King",
           logo: '/icones/ice-king-crown.png',
           seuil: 300,
           idcible: 1,
@@ -58,7 +57,7 @@ export const origworld = {
     },
     {
       id: 2,
-      name: "L'Enchiridion",
+      name: "The Enchiridion",
       logo: '/icones/enchiridion.png',
       cout: 60,
       croissance: 1.1,
@@ -69,7 +68,7 @@ export const origworld = {
       managerUnlocked: false,
       paliers: [
         {
-          name: 'Un livre ancien retrouvé dans les ruines',
+          name: "An ancient book found in the ruins",
           logo: '/icones/enchiridion.png',
           seuil: 20,
           idcible: 2,
@@ -78,7 +77,7 @@ export const origworld = {
           unlocked: false,
         },
         {
-          name: 'Billy y consigne les codes du héros',
+          name: "Billy writes down the hero's code",
           logo: '/icones/enchiridion.png',
           seuil: 75,
           idcible: 2,
@@ -87,7 +86,7 @@ export const origworld = {
           unlocked: false,
         },
         {
-          name: "Finn en fait son manuel d'aventurier",
+          name: "Finn makes it his adventurer's handbook",
           logo: '/icones/enchiridion.png',
           seuil: 300,
           idcible: 2,
@@ -99,7 +98,7 @@ export const origworld = {
     },
     {
       id: 3,
-      name: "L'Axe Basse de Marceline",
+      name: "Marceline's Axe Bass",
       logo: '/icones/axe-bass.png',
       cout: 720,
       croissance: 1.12,
@@ -110,7 +109,7 @@ export const origworld = {
       managerUnlocked: false,
       paliers: [
         {
-          name: "Simon forge l'axe pour la jeune Marceline",
+          name: "Simon crafts the axe for young Marceline",
           logo: '/icones/axe-bass.png',
           seuil: 20,
           idcible: 3,
@@ -119,7 +118,7 @@ export const origworld = {
           unlocked: false,
         },
         {
-          name: 'Mille ans de riffs endiablés',
+          name: "A thousand years of wild riffs",
           logo: '/icones/axe-bass.png',
           seuil: 75,
           idcible: 3,
@@ -128,7 +127,7 @@ export const origworld = {
           unlocked: false,
         },
         {
-          name: 'La Reine Vampire monte sur scène',
+          name: "The Vampire Queen takes the stage",
           logo: '/icones/axe-bass.png',
           seuil: 300,
           idcible: 3,
@@ -140,7 +139,7 @@ export const origworld = {
     },
     {
       id: 4,
-      name: "L'Épée de Racine de Finn",
+      name: "Finn's Root Sword",
       logo: '/icones/root-sword.png',
       cout: 8640,
       croissance: 1.13,
@@ -151,7 +150,7 @@ export const origworld = {
       managerUnlocked: false,
       paliers: [
         {
-          name: "Finn taille son épée dans les racines de la forêt",
+          name: "Finn carves his sword from the forest's roots",
           logo: '/icones/root-sword.png',
           seuil: 20,
           idcible: 4,
@@ -160,7 +159,7 @@ export const origworld = {
           unlocked: false,
         },
         {
-          name: "L'heure de l'aventure a sonné !",
+          name: "It's Adventure Time!",
           logo: '/icones/root-sword.png',
           seuil: 75,
           idcible: 4,
@@ -169,7 +168,7 @@ export const origworld = {
           unlocked: false,
         },
         {
-          name: "Jake veille sur son frère d'armes",
+          name: "Jake has his brother's back",
           logo: '/icones/root-sword.png',
           seuil: 300,
           idcible: 4,
@@ -181,7 +180,7 @@ export const origworld = {
     },
     {
       id: 5,
-      name: 'Le Gantelet du Nightosphere',
+      name: "The Nightosphere Gauntlet",
       logo: '/icones/gauntlet-nightosphere.png',
       cout: 103680,
       croissance: 1.14,
@@ -192,7 +191,7 @@ export const origworld = {
       managerUnlocked: false,
       paliers: [
         {
-          name: 'Jake ramène le gantelet du royaume de son père',
+          name: "Jake brings the gauntlet back from the Nightosphere",
           logo: '/icones/gauntlet-nightosphere.png',
           seuil: 20,
           idcible: 5,
@@ -201,7 +200,7 @@ export const origworld = {
           unlocked: false,
         },
         {
-          name: "Un coup de poing venu d'outre-tombe",
+          name: "A punch from beyond the grave",
           logo: '/icones/gauntlet-nightosphere.png',
           seuil: 75,
           idcible: 5,
@@ -210,7 +209,7 @@ export const origworld = {
           unlocked: false,
         },
         {
-          name: 'Hunson Abadeer garde un œil dessus',
+          name: "Hunson Abadeer keeps an eye on it",
           logo: '/icones/gauntlet-nightosphere.png',
           seuil: 300,
           idcible: 5,
@@ -222,7 +221,7 @@ export const origworld = {
     },
     {
       id: 6,
-      name: "L'Épée Dorée de Combat de Finn",
+      name: "Finn's Golden Sword of Battle",
       logo: '/icones/golden-sword.png',
       cout: 1244160,
       croissance: 1.15,
@@ -233,7 +232,7 @@ export const origworld = {
       managerUnlocked: false,
       paliers: [
         {
-          name: 'La Princesse Chewing-Gum en dessine les plans',
+          name: "Princess Bubblegum draws the blueprints",
           logo: '/icones/golden-sword.png',
           seuil: 20,
           idcible: 6,
@@ -242,7 +241,7 @@ export const origworld = {
           unlocked: false,
         },
         {
-          name: 'Une lame forgée pour les combats les plus rudes',
+          name: "A blade forged for the toughest battles",
           logo: '/icones/golden-sword.png',
           seuil: 75,
           idcible: 6,
@@ -251,7 +250,7 @@ export const origworld = {
           unlocked: false,
         },
         {
-          name: "Le dernier rempart d'Ooo",
+          name: "Ooo's last line of defense",
           logo: '/icones/golden-sword.png',
           seuil: 300,
           idcible: 6,
@@ -264,7 +263,7 @@ export const origworld = {
   ],
   allunlocks: [
     {
-      name: 'La Grande Guerre des Champignons prend fin',
+      name: "The Great Mushroom War ends",
       logo: '/icones/mushroom-war.png',
       seuil: 30,
       idcible: 0,
@@ -273,7 +272,7 @@ export const origworld = {
       unlocked: false,
     },
     {
-      name: 'La prophétie du Hibou Cosmique',
+      name: "The Cosmic Owl's prophecy",
       logo: '/icones/cosmic-owl.png',
       seuil: 150,
       idcible: 0,
@@ -282,7 +281,7 @@ export const origworld = {
       unlocked: false,
     },
     {
-      name: 'GOLB se réveille aux confins d\'Ooo',
+      name: "GOLB awakens at the edge of Ooo",
       logo: '/icones/golb.png',
       seuil: 1000,
       idcible: 0,
@@ -293,7 +292,7 @@ export const origworld = {
   ],
   upgrades: [
     {
-      name: 'La couronne murmure des secrets glacés',
+      name: "The crown whispers icy secrets",
       logo: '/icones/ice-king-crown.png',
       seuil: 80000,
       idcible: 1,
@@ -302,7 +301,7 @@ export const origworld = {
       unlocked: false,
     },
     {
-      name: "L'ancienne vie de Simon Petrikov",
+      name: "Simon Petrikov's former life",
       logo: '/icones/simon-petrikov.png',
       seuil: 4000000,
       idcible: 1,
@@ -311,7 +310,7 @@ export const origworld = {
       unlocked: false,
     },
     {
-      name: 'Les épreuves du héros',
+      name: "The hero's trials",
       logo: '/icones/enchiridion.png',
       seuil: 400000,
       idcible: 2,
@@ -320,7 +319,7 @@ export const origworld = {
       unlocked: false,
     },
     {
-      name: 'La sagesse ancienne de Billy',
+      name: "Billy's ancient wisdom",
       logo: '/icones/billy.png',
       seuil: 16000000,
       idcible: 2,
@@ -329,7 +328,7 @@ export const origworld = {
       unlocked: false,
     },
     {
-      name: 'Mille ans de chansons',
+      name: "A thousand years of songs",
       logo: '/icones/axe-bass.png',
       seuil: 2000000,
       idcible: 3,
@@ -338,7 +337,7 @@ export const origworld = {
       unlocked: false,
     },
     {
-      name: 'Le riff de la Reine Vampire',
+      name: "The Vampire Queen's riff",
       logo: '/icones/marceline.png',
       seuil: 80000000,
       idcible: 3,
@@ -347,7 +346,7 @@ export const origworld = {
       unlocked: false,
     },
     {
-      name: "L'heure de l'aventure !",
+      name: "Adventure Time!",
       logo: '/icones/root-sword.png',
       seuil: 8000000,
       idcible: 4,
@@ -356,7 +355,7 @@ export const origworld = {
       unlocked: false,
     },
     {
-      name: "L'épée de racine reforgée",
+      name: "The root sword, reforged",
       logo: '/icones/finn.png',
       seuil: 320000000,
       idcible: 4,
@@ -365,7 +364,7 @@ export const origworld = {
       unlocked: false,
     },
     {
-      name: 'Un coup de poing venu du Nightosphere',
+      name: "A punch from the Nightosphere",
       logo: '/icones/gauntlet-nightosphere.png',
       seuil: 40000000,
       idcible: 5,
@@ -374,7 +373,7 @@ export const origworld = {
       unlocked: false,
     },
     {
-      name: 'Forgée par la science de la Princesse',
+      name: "Forged by the Princess's science",
       logo: '/icones/golden-sword.png',
       seuil: 160000000,
       idcible: 6,
@@ -385,7 +384,7 @@ export const origworld = {
   ],
   angelupgrades: [
     {
-      name: 'Le vœu de Prismo',
+      name: "Prismo's wish",
       logo: '/icones/prismo.png',
       seuil: 1,
       idcible: 0,
@@ -394,7 +393,7 @@ export const origworld = {
       unlocked: false,
     },
     {
-      name: 'Le marché de la Mort',
+      name: "Death's bargain",
       logo: '/icones/death.png',
       seuil: 4,
       idcible: 0,
@@ -403,7 +402,7 @@ export const origworld = {
       unlocked: false,
     },
     {
-      name: 'Le rêve du Hibou Cosmique',
+      name: "The Cosmic Owl's dream",
       logo: '/icones/cosmic-owl.png',
       seuil: 10,
       idcible: -1,
@@ -423,7 +422,7 @@ export const origworld = {
       unlocked: false,
     },
     {
-      name: 'Billy le Héros',
+      name: "Billy the Hero",
       logo: '/icones/billy.png',
       seuil: 960000,
       idcible: 2,
@@ -441,7 +440,7 @@ export const origworld = {
       unlocked: false,
     },
     {
-      name: 'Finn le Humain',
+      name: "Finn the Human",
       logo: '/icones/finn.png',
       seuil: 48000000,
       idcible: 4,
@@ -450,7 +449,7 @@ export const origworld = {
       unlocked: false,
     },
     {
-      name: 'Jake le Chien',
+      name: "Jake the Dog",
       logo: '/icones/jake.png',
       seuil: 360000000,
       idcible: 5,
@@ -459,7 +458,7 @@ export const origworld = {
       unlocked: false,
     },
     {
-      name: 'Princesse Chewing-Gum',
+      name: "Princess Bubblegum",
       logo: '/icones/princess-bubblegum.png',
       seuil: 3600000000,
       idcible: 6,
