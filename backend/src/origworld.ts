@@ -6,7 +6,7 @@ import { RatioType } from './graphql.js';
 // arcs). Each product is run by the character linked to that object.
 export const origworld = {
   name: 'Adventure Time Capitalist',
-  logo: '/icones/pfp-jake.png',
+  logo: '/icones/pfp.png',
   money: 0,
   score: 0,
   totalangels: 0,
@@ -422,8 +422,8 @@ export const origworld = {
       unlocked: false,
     },
     {
-      name: "Billy the Hero",
-      logo: '/icones/billy.png',
+      name: 'Simon the Antiquarian',
+      logo: '/icones/simon-petrikov-2.png',
       seuil: 960000,
       idcible: 2,
       ratio: 0,
@@ -449,8 +449,8 @@ export const origworld = {
       unlocked: false,
     },
     {
-      name: "Jake the Dog",
-      logo: '/icones/jake.png',
+      name: 'Billy the Hero',
+      logo: '/icones/billy.png',
       seuil: 360000000,
       idcible: 5,
       ratio: 0,
