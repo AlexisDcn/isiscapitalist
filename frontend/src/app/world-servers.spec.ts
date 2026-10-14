@@ -10,6 +10,14 @@ describe('normalizeServerUrl', () => {
     expect(normalizeServerUrl('https://hote.fr/graphql/')).toBe('https://hote.fr');
     expect(normalizeServerUrl('http://localhost:3000')).toBe('http://localhost:3000');
   });
+
+  it('complète le protocole manquant (http en local, https sinon)', () => {
+    expect(normalizeServerUrl('localhost:3000')).toBe('http://localhost:3000');
+    expect(normalizeServerUrl('127.0.0.1:3000/graphql')).toBe('http://127.0.0.1:3000');
+    expect(normalizeServerUrl('capitalist.lucaslopvet.fr/graphql')).toBe(
+      'https://capitalist.lucaslopvet.fr',
+    );
+  });
 });
 
 describe('GameService.img', () => {

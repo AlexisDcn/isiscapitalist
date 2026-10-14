@@ -14,11 +14,19 @@ export const DEFAULT_WORLDS: WorldServer[] = [
 ];
 
 // Accepte « https://hote », « https://hote/ » ou « https://hote/graphql ».
+// Sans protocole, l'adresse serait prise pour un chemin relatif au client
+// (requête envoyée au serveur Angular, d'où un 404) : on le complète, en http
+// pour une machine locale et en https sinon.
 export function normalizeServerUrl(url: string): string {
-  return url
+  let propre = url
     .trim()
     .replace(/\/+$/, '')
     .replace(/\/graphql$/i, '');
+  if (propre && !/^https?:\/\//i.test(propre)) {
+    const local = /^(localhost|127\.0\.0\.1|\[::1\])(:|\/|$)/i.test(propre);
+    propre = (local ? 'http://' : 'https://') + propre.replace(/^\/+/, '');
+  }
+  return propre;
 }
 
 function lire(cle: string): string | null {
