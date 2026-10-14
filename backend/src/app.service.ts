@@ -191,7 +191,9 @@ export class AppService {
     switch (palier.typeratio) {
       case RatioType.vitesse:
         this.forEachTargetProduct(world, palier.idcible, (product) => {
-          product.vitesse = product.vitesse / palier.ratio;
+          // vitesse est un Int! dans le schéma : une division non entière
+          // (125 / 3) rendrait le monde impossible à renvoyer au client.
+          product.vitesse = Math.max(1, Math.round(product.vitesse / palier.ratio));
         });
         break;
       case RatioType.gain:
@@ -227,6 +229,11 @@ export class AppService {
         path.join(process.cwd(), 'userworlds/', user + '-world.json'),
       );
       const world: World = JSON.parse(data.toString());
+      // Répare les sauvegardes écrites avant l'arrondi des bonus de vitesse.
+      for (const p of world.products) {
+        p.vitesse = Math.max(1, Math.round(p.vitesse));
+        p.timeleft = Math.round(p.timeleft);
+      }
       this.evolveWorld(world);
       return world;
     } catch (e: unknown) {

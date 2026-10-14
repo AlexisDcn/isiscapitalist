@@ -352,7 +352,11 @@ export class GameService {
         palier.typeratio === 'vitesse' &&
         (palier.idcible === 0 || p.id === palier.idcible)
       ) {
-        mis_a_jour = { ...mis_a_jour, vitesse: mis_a_jour.vitesse / palier.ratio };
+        // arrondi comme sur le serveur (vitesse est un entier dans le schéma)
+        mis_a_jour = {
+          ...mis_a_jour,
+          vitesse: Math.max(1, Math.round(mis_a_jour.vitesse / palier.ratio)),
+        };
       }
       if (
         palier.typeratio === 'gain' &&

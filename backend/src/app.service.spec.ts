@@ -142,6 +142,15 @@ describe('AppService', () => {
       expect(product.vitesse).toBe(500);
     });
 
+    it('garde une vitesse entière quand la division ne tombe pas juste (Int! dans le schéma)', () => {
+      const world = makeWorld({ money: 1000 });
+      world.products[0].vitesse = 125;
+      world.products[0].paliers[0].ratio = 3;
+      const product = service.achatProduit(world, 1, 5);
+
+      expect(product.vitesse).toBe(42);
+    });
+
     it("ne débloque pas un palier tant que le seuil n'est pas atteint", () => {
       const world = makeWorld({ money: 1000 });
       const product = service.achatProduit(world, 1, 4);
