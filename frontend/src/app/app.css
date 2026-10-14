@@ -147,14 +147,12 @@
   font-size: 38px;
   line-height: 1;
   font-variant-numeric: tabular-nums;
-  color: var(--grass-dark);
-  text-shadow: 2px 2px 0 var(--ink);
-  -webkit-text-stroke: 1px var(--ink);
+  color: var(--ink);
 }
 
 .coin {
-  width: 34px;
-  height: 34px;
+  width: auto;
+  height: 46px;
   object-fit: contain;
 }
 

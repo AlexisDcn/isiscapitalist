@@ -114,9 +114,9 @@ body {
 
 /* Petite pièce d'or qui remplace le "$" à côté des montants */
 .piece {
-  width: 1.15em;
-  height: 1.15em;
+  width: auto;
+  height: 1.3em;
   object-fit: contain;
-  vertical-align: -0.2em;
+  vertical-align: -0.3em;
   margin: 0 0.1em;
 }
