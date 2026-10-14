@@ -94,10 +94,6 @@ export class App {
     return w ? w.activeangels + this.angesDepenses() : 0;
   });
 
-  // La pièce d'or est une image du client (frontend/public) : elle s'affiche
-  // quel que soit le monde ; si le fichier manque, on affiche un "$".
-  coinKo = signal(false);
-
   ajoutMonde = signal(false);
   urlSaisie = '';
 

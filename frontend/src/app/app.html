@@ -108,11 +108,7 @@
         <div class="cash">
           <small>Treasure</small>
           <b>
-            @if (!coinKo()) {
-              <img class="coin" src="/gold-coin.png" alt="gold" (error)="coinKo.set(true)" />
-            } @else {
-              $
-            }
+            <img class="coin" src="/gold-coin.png" alt="gold" />
             <span [innerHTML]="world.money | bigvalue"></span>
           </b>
           <span class="rate"><span [innerHTML]="revenuParSeconde() | bigvalue"></span> / sec (managed)</span>
@@ -183,7 +179,7 @@
               <img class="objet" [src]="gameService.img(manager.logo)" [alt]="manager.name" />
               <div class="nom">{{ manager.name }}</div>
               <div class="cible">runs {{ cibleDe(manager) }}</div>
-              <div class="cout"><span [innerHTML]="manager.seuil | bigvalue"></span> $</div>
+              <div class="cout"><span [innerHTML]="manager.seuil | bigvalue"></span> <img class="piece" src="/gold-coin.png" alt="gold" /></div>
               <span class="garde" (click)="refuserSi(world.money < manager.seuil)">
                 <button
                   type="button"
@@ -234,7 +230,7 @@
             <img class="objet" [src]="gameService.img(upgrade.logo)" [alt]="upgrade.name" />
             <div class="infos">
               <div class="nom">{{ upgrade.name }}</div>
-              <div class="cout"><span [innerHTML]="upgrade.seuil | bigvalue"></span> $</div>
+              <div class="cout"><span [innerHTML]="upgrade.seuil | bigvalue"></span> <img class="piece" src="/gold-coin.png" alt="gold" /></div>
               <div class="cible">{{ cibleDe(upgrade) }} {{ bonusDe(upgrade) }}</div>
             </div>
             <span class="garde" (click)="refuserSi(world.money < upgrade.seuil)">
