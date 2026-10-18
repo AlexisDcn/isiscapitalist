@@ -29,18 +29,22 @@ Dans Dockge, créer la stack `isiscapitalist` avec le contenu de
 curl -I http://localhost:3002
 ```
 
-UFW : le tunnel joint le jeu via l'IP du LAN, ajouter le port si nécessaire.
-
-```bash
-sudo ufw allow 3002/tcp
-```
-
 ## 3. Ouvrir l'accès public (Cloudflare)
 
 Zero Trust → Networks → Tunnels → `elitedesk` → *Public hostname* → Add :
 
 - Subdomain : `capitalist` — Domain : `alexisdechenais.fr`
-- Service : `HTTP` → `192.168.1.100:3002`
+- Service : `HTTP` → `100.78.214.78:3002`
+
+`100.78.214.78` est l'IP Tailscale du serveur : contrairement à l'IP du LAN,
+elle ne change pas en cas de déménagement (box différente), et UFW autorise
+déjà tout le trafic sur `tailscale0`, donc aucune règle à ajouter.
+
+Vérifier depuis le serveur que le jeu répond sur cette adresse :
+
+```bash
+curl -I http://100.78.214.78:3002
+```
 
 Ne **pas** le mettre derrière Cloudflare Access : les jeux des autres
 étudiants appellent `/graphql` directement et ne peuvent pas passer le code
