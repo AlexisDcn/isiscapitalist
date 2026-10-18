@@ -32,16 +32,12 @@ Sauvegarde : ce volume est dans `/var/lib/docker/volumes`, pas dans
 Zero Trust → Networks → Tunnels → `elitedesk` → *Public hostname* → Add :
 
 - Subdomain : `capitalist` — Domain : `alexisdechenais.fr`
-- Service : `HTTP` → `100.78.214.78:3002`
+- Service : `HTTP` → `192.168.1.100:3002`
 
-`100.78.214.78` est l'IP Tailscale du serveur : contrairement à l'IP du LAN,
-elle ne change pas en cas de déménagement (box différente), et UFW autorise
-déjà tout le trafic sur `tailscale0`, donc aucune règle à ajouter.
-
-Si `https://capitalist.alexisdechenais.fr` renvoie une erreur 502 alors que
-`http://100.78.214.78:3002` marche via Tailscale, cloudflared ne joint pas
-l'IP Tailscale depuis son conteneur : utiliser `192.168.1.100:3002` à la place
-(et autoriser le port dans UFW).
+IP du LAN, comme les autres services du tunnel : le site public ne dépend pas
+de Tailscale. Aucune règle UFW à ajouter, Docker publie le port par ses
+propres règles iptables. Après un déménagement, mettre à jour cette cible avec
+les autres.
 
 Ne **pas** le mettre derrière Cloudflare Access : les jeux des autres
 étudiants appellent `/graphql` directement et ne peuvent pas passer le code
