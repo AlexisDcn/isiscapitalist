@@ -12,22 +12,20 @@ tunnel Cloudflare existant, sans ouvrir de port sur la box.
    *Change visibility* → **Public** (sinon le serveur ne peut pas la télécharger
    sans identifiants).
 
-## 2. Créer la stack sur le serveur
+## 2. Créer la stack (Dockge, sans SSH)
 
-```bash
-sudo mkdir -p /opt/stacks/isiscapitalist/userworlds
-sudo chown -R 1000:1000 /opt/stacks/isiscapitalist/userworlds
-```
+Dans Dockge (`http://100.78.214.78:5001`) : **+ Compose**, nom
+`isiscapitalist`, coller le contenu de `deploy/compose.yaml`, puis **Deploy**.
 
-Le conteneur tourne avec l'utilisateur `node` (uid 1000) : sans ce `chown`, il
-ne pourrait pas écrire les sauvegardes.
+Les sauvegardes vont dans le volume Docker nommé `isiscapitalist_userworlds`,
+créé automatiquement avec les bons droits. Il est conservé lors des mises à
+jour et des redéploiements (seul « Delete » de la stack peut le supprimer).
 
-Dans Dockge, créer la stack `isiscapitalist` avec le contenu de
-`deploy/compose.yaml`, puis **Deploy**. Vérifier depuis le serveur :
+Vérifier que le jeu répond : ouvrir `http://100.78.214.78:3002` depuis un
+appareil connecté à Tailscale.
 
-```bash
-curl -I http://localhost:3002
-```
+Sauvegarde : ce volume est dans `/var/lib/docker/volumes`, pas dans
+`/opt/stacks` ; l'ajouter au cron de sauvegarde le jour où il existe.
 
 ## 3. Ouvrir l'accès public (Cloudflare)
 
@@ -40,11 +38,10 @@ Zero Trust → Networks → Tunnels → `elitedesk` → *Public hostname* → Ad
 elle ne change pas en cas de déménagement (box différente), et UFW autorise
 déjà tout le trafic sur `tailscale0`, donc aucune règle à ajouter.
 
-Vérifier depuis le serveur que le jeu répond sur cette adresse :
-
-```bash
-curl -I http://100.78.214.78:3002
-```
+Si `https://capitalist.alexisdechenais.fr` renvoie une erreur 502 alors que
+`http://100.78.214.78:3002` marche via Tailscale, cloudflared ne joint pas
+l'IP Tailscale depuis son conteneur : utiliser `192.168.1.100:3002` à la place
+(et autoriser le port dans UFW).
 
 Ne **pas** le mettre derrière Cloudflare Access : les jeux des autres
 étudiants appellent `/graphql` directement et ne peuvent pas passer le code
