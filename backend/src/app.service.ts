@@ -5,6 +5,21 @@ import { origworld } from './origworld.js';
 import { World, Product, Palier, RatioType } from './graphql.js';
 import { calcQtProductionforElapseTime } from './production.js';
 
+// Dossier des sauvegardes : configurable (WORLDS_DIR) pour le placer hors du
+// dépôt sur le serveur de production, créé au besoin.
+const WORLDS_DIR = path.resolve(
+  process.env.WORLDS_DIR ?? path.join(process.cwd(), 'userworlds'),
+);
+fs.mkdirSync(WORLDS_DIR, { recursive: true });
+
+// Fichier de sauvegarde d'un joueur. Le pseudo vient du client : on l'encode
+// pour qu'un pseudo comme "../../x" ne puisse pas écrire hors du dossier
+// (encodeURIComponent transforme les "/" et "\\" en %2F / %5C).
+export function worldFile(user: string): string {
+  if (!user || user.length > 64) throw new Error('Invalid user name');
+  return path.join(WORLDS_DIR, encodeURIComponent(user) + '-world.json');
+}
+
 @Injectable()
 export class AppService {
   getHello(): string {
@@ -71,7 +86,12 @@ export class AppService {
   }
 
   acheterAngelUpgrade(world: World, name: string): Palier {
-    return this.acheterUpgrade(world, world.angelupgrades, name, 'activeangels');
+    return this.acheterUpgrade(
+      world,
+      world.angelupgrades,
+      name,
+      'activeangels',
+    );
   }
 
   // Logique commune à acheterCashUpgrade et acheterAngelUpgrade : seule la
@@ -127,7 +147,9 @@ export class AppService {
     // Les angel upgrades achetés sont permanents (leurs anges sont perdus) :
     // on les conserve et on réapplique leur bonus au monde remis à zéro.
     for (const achete of world.angelupgrades.filter((u) => u.unlocked)) {
-      const upgrade = nouveauMonde.angelupgrades.find((u) => u.name === achete.name);
+      const upgrade = nouveauMonde.angelupgrades.find(
+        (u) => u.name === achete.name,
+      );
       if (upgrade) {
         upgrade.unlocked = true;
         this.applyPalierBonus(nouveauMonde, upgrade);
@@ -193,7 +215,10 @@ export class AppService {
         this.forEachTargetProduct(world, palier.idcible, (product) => {
           // vitesse est un Int! dans le schéma : une division non entière
           // (125 / 3) rendrait le monde impossible à renvoyer au client.
-          product.vitesse = Math.max(1, Math.round(product.vitesse / palier.ratio));
+          product.vitesse = Math.max(
+            1,
+            Math.round(product.vitesse / palier.ratio),
+          );
         });
         break;
       case RatioType.gain:
@@ -225,9 +250,7 @@ export class AppService {
 
   readUserWorld(user: string): World {
     try {
-      const data = fs.readFileSync(
-        path.join(process.cwd(), 'userworlds/', user + '-world.json'),
-      );
+      const data = fs.readFileSync(worldFile(user));
       const world: World = JSON.parse(data.toString());
       // Répare les sauvegardes écrites avant l'arrondi des bonus de vitesse.
       for (const p of world.products) {
@@ -277,7 +300,10 @@ export class AppService {
     }
 
     // Le nombre total d'anges suit le score en direct ; il ne redescend jamais.
-    world.totalangels = Math.max(world.totalangels, this.angesGagnes(world.score));
+    world.totalangels = Math.max(
+      world.totalangels,
+      this.angesGagnes(world.score),
+    );
 
     world.lastupdate = String(now);
   }
@@ -299,10 +325,7 @@ export class AppService {
   // mises à jour quand plusieurs requêtes s'enchaînent rapidement.
   saveWorld(user: string, world: World) {
     try {
-      fs.writeFileSync(
-        path.join(process.cwd(), 'userworlds/', user + '-world.json'),
-        JSON.stringify(world),
-      );
+      fs.writeFileSync(worldFile(user), JSON.stringify(world));
     } catch (err) {
       console.error(err);
       throw new Error(`Could not save the world on the server`);

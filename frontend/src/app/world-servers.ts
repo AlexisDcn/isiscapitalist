@@ -8,8 +8,15 @@ export interface WorldServer {
 // Mondes proposés au premier lancement. Tous exposent le même schéma GraphQL
 // (point d'accès /graphql) et servent leurs images sous /icones, ce qui
 // permet au même client de naviguer de l'un à l'autre.
+// En développement (ng serve sur le port 4200) le monde local est le backend du
+// port 3000 ; une fois en ligne, le jeu est servi par son propre serveur de
+// monde, à la même adresse que la page.
+const enDev = typeof location === 'undefined' || location.port === '4200';
+
 export const DEFAULT_WORLDS: WorldServer[] = [
-  { name: 'Adventure Time Capitalist (local)', url: 'http://localhost:3000' },
+  enDev
+    ? { name: 'Adventure Time Capitalist (local)', url: 'http://localhost:3000' }
+    : { name: 'Adventure Time Capitalist', url: location.origin },
   { name: 'Nuka Capitalist', url: 'https://capitalist.lucaslopvet.fr' },
 ];
 

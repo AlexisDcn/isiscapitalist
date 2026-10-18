@@ -1,0 +1,16 @@
+# Stack Dockge : à copier dans /opt/stacks/isiscapitalist/compose.yaml
+services:
+  isiscapitalist:
+    image: ghcr.io/alexisdcn/isiscapitalist:latest
+    container_name: isiscapitalist
+    restart: unless-stopped
+    ports:
+      - "3002:3000"
+    volumes:
+      # sauvegardes des joueurs, conservées entre les mises à jour
+      - ./userworlds:/data/userworlds
+    dns:
+      - 1.1.1.1
+    labels:
+      # Watchtower ne met à jour que les conteneurs portant ce label
+      - com.centurylinklabs.watchtower.enable=true
